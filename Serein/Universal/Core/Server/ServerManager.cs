@@ -91,7 +91,10 @@ namespace Serein.Core.Server
         /// 命令历史记录
         /// </summary>
         public static readonly List<string> CommandHistory = new();
-        public static ProcessStartInfo ServerStartInfo { get; set; }
+
+        public static string? JEOptimizationArguments { get; set; }
+        public static string? JEStartMaxRam { get; set; } 
+
         /// <summary>
         /// 编码列表
         /// </summary>
@@ -160,15 +163,43 @@ namespace Serein.Core.Server
 #endif
                 Logger.Output(LogType.Server_Notice, "启动中");
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                if(Global.Settings.Server.MaxRAM != null)
+                {
+                    ServerManager.JEStartMaxRam = Global.Settings.Server.MaxRAM;
+                }
+                else
+                {
+                    ServerManager.JEStartMaxRam = "2048";
+                }
                 
                 #region 主变量初始化
                 if (ServerType == "jar")
                 {
+                    PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                    float AvailableRAM = ramCounter.NextValue();
+                    if(AvailableRAM >= 12288)
+                    {
+                        ServerManager.JEOptimizationArguments = "--add-modules=jdk.incubator.vector -XX:+UseG1GC " +
+                            "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
+                            "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
+                            "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
+                            "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
+                            "-Daikars.new.flags=true -XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M -XX:G1ReservePercent=15 ";
+                    }
+                    else
+                    {
+                        ServerManager.JEOptimizationArguments = "--add-modules=jdk.incubator.vector -XX:+UseG1GC " +
+                            "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
+                            "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
+                            "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
+                            "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
+                            "-Daikars.new.flags=true -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 ";
+                    }
                     ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
                     {
 
                         FileName = "java",
-                        Arguments = " -jar " + Global.Settings.Server.Path + " --nogui",
+                        Arguments = " -jar -Xmx" + JEStartMaxRam + "M " + ServerManager.JEOptimizationArguments + Global.Settings.Server.Path + " --nogui",
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,

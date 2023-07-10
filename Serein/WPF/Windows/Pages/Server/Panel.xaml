@@ -139,6 +139,14 @@
                         Content="结束进程" />
                 </Grid>
             </GroupBox>
+            <GroupBox
+            Margin="3"
+            Padding="3"
+            Header="最大内存 (MB)">
+                <Grid>
+                    <ui:TextBox Name="MaxRAM"/>
+                </Grid>    
+            </GroupBox>
         </StackPanel>
         <GroupBox
             Grid.RowSpan="2"

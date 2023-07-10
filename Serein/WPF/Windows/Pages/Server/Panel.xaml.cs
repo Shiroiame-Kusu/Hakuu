@@ -15,6 +15,7 @@ namespace Serein.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
+            
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();
             PanelRichTextBox.Document.Blocks.Clear();
@@ -27,6 +28,7 @@ namespace Serein.Windows.Pages.Server
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
+            Global.Settings.Server.MaxRAM = MaxRAM.Text;
             ServerManager.Start();
             UpdateInfos();
         }
@@ -106,6 +108,7 @@ namespace Serein.Windows.Pages.Server
         private void UpdateInfos()
             => Dispatcher.Invoke(() =>
             {
+                
                 Status.Content = ServerManager.Status ? "已启动" : "未启动";
                 if (ServerManager.Status)
                 {

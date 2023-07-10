@@ -34,5 +34,7 @@ namespace Serein.Settings
         public string[] StopCommands = { "stop" };
         
         public int Type = 1;
+
+        public string MaxRAM;
     }
 }
