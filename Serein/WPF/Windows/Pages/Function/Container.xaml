@@ -22,36 +22,13 @@
             Frame="{Binding ElementName=RootFrame}"
             SelectedPageIndex="0">
             <ui:NavigationCompact.Items>
-                <ui:NavigationItem
-                    x:Name="BotNavigationItem"
-                    Content="机器人"
-                    Icon="Bot24"
-                    PageTag="bot"
-                    PageType="{x:Type pages:Bot}" />
-                <ui:NavigationItem
-                    x:Name="MemberNavigationItem"
-                    Content="成员管理"
-                    Icon="PeopleCommunity24"
-                    PageTag="member"
-                    PageType="{x:Type pages:Member}" />
-                <ui:NavigationItem
-                    x:Name="RegexNavigationItem"
-                    Content="正则"
-                    Icon="TextBulletListSquare24"
-                    PageTag="regex"
-                    PageType="{x:Type pages:Regex}" />
+
                 <ui:NavigationItem
                     x:Name="ScheduleNavigationItem"
                     Content="定时任务"
                     Icon="Timer24"
                     PageTag="schedule"
                     PageType="{x:Type pages:Schedule}" />
-                <ui:NavigationItem
-                    x:Name="JSPluginNavigationItem"
-                    Content="JS插件"
-                    Icon="Javascript24"
-                    PageTag="jsplugin"
-                    PageType="{x:Type pages:JSPlugin}" />
             </ui:NavigationCompact.Items>
         </ui:NavigationCompact>
         <Border

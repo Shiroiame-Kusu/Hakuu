@@ -135,15 +135,7 @@
                 Panel.ZIndex="999"
                 Timeout="5000" />
         </Grid>
-        <ui:Dialog
-            x:Name="MemberEditor"
-            Title="成员编辑器"
-            ButtonLeftClick="MemberEditor_ButtonLeftClick"
-            ButtonLeftName="确定"
-            ButtonRightClick="MemberEditor_ButtonRightClick"
-            ButtonRightName="取消"
-            DialogHeight="275"
-            DialogWidth="300">
+        <ui:Dialog>
             <Grid>
                 <StackPanel>
                     <TextBlock
@@ -162,15 +154,7 @@
                 </StackPanel>
             </Grid>
         </ui:Dialog>
-        <ui:Dialog
-            x:Name="RegexEditor"
-            Title="正则编辑器"
-            ButtonLeftClick="RegexEditor_ButtonLeftClick"
-            ButtonLeftName="确定"
-            ButtonRightClick="RegexEditor_ButtonRightClick"
-            ButtonRightName="取消"
-            DialogHeight="390"
-            DialogWidth="325">
+        <ui:Dialog>
             <Grid>
                 <StackPanel>
                     <Grid Margin="0,5">
@@ -186,16 +170,6 @@
                             Margin="0,5,0,0"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                             Text="作用域" />
-                        <ComboBox
-                            Name="RegexEditor_Area"
-                            Grid.Row="1"
-                            SelectionChanged="RegexEditor_Area_SelectionChanged">
-                            <ComboBoxItem Content="禁用" />
-                            <ComboBoxItem Content="控制台" />
-                            <ComboBoxItem Content="消息（群聊）" />
-                            <ComboBoxItem Content="消息（私聊）" />
-                            <ComboBoxItem Content="消息（自身发送）" />
-                        </ComboBox>
                         <CheckBox
                             Name="RegexEditor_IsAdmain"
                             Grid.Row="1"
@@ -257,15 +231,7 @@
                 </StackPanel>
             </Grid>
         </ui:Dialog>
-        <ui:Dialog
-            x:Name="EventEditor"
-            Title="事件编辑器"
-            ButtonLeftClick="EventEditor_ButtonLeftClick"
-            ButtonLeftName="确定"
-            ButtonRightClick="EventEditor_ButtonRightClick"
-            ButtonRightName="取消"
-            DialogHeight="215"
-            DialogWidth="300">
+        <ui:Dialog>
             <Grid>
                 <DockPanel Margin="0,5">
                     <TextBlock

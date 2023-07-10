@@ -65,7 +65,7 @@ namespace Serein.Windows.Pages.Settings
             OpenFileDialog dialog = new()
             {
                 InitialDirectory = !string.IsNullOrEmpty(Global.Settings.Server.Path) && File.Exists(Global.Settings.Server.Path) ? Global.Settings.Server.Path : Global.PATH,
-                Filter = "支持的文件(*.exe *.bat)|*.exe;*.bat"
+                Filter = "支持的文件(*.exe *.bat *.jar)|*.exe;*.bat;*.jar"
             };
             if (dialog.ShowDialog() ?? false)
             {

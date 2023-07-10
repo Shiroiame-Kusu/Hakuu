@@ -192,36 +192,7 @@ namespace Serein.Utils
                     Catalog.Server.Panel?.Dispatcher.Invoke(() => Catalog.Server.Panel?.PanelRichTextBox.Document.Blocks.Clear());
                     Catalog.Server.Cache.Clear();
                     break;
-                case LogType.Bot_Notice:
-                case LogType.Bot_Receive:
-                case LogType.Bot_Send:
-                case LogType.Bot_Error:
-                    Catalog.Function.Bot?.Dispatcher.Invoke(() => Catalog.Function.Bot?.Append(LogPreProcessing.Color(type, line)));
-                    Catalog.Function.BotCache.Add(new(type, line));
-                    if (Catalog.Function.BotCache.Count > Global.Settings.Serein.MaxCacheLines)
-                    {
-                        Catalog.Function.BotCache.RemoveRange(0, Catalog.Function.BotCache.Count - Global.Settings.Serein.MaxCacheLines);
-                    }
-                    break;
-                case LogType.Bot_Clear:
-                    Catalog.Function.Bot?.Dispatcher.Invoke(() => Catalog.Function.Bot?.BotRichTextBox.Document.Blocks.Clear());
-                    Catalog.Function.BotCache.Clear();
-                    break;
-                case LogType.Plugin_Notice:
-                case LogType.Plugin_Error:
-                case LogType.Plugin_Info:
-                case LogType.Plugin_Warn:
-                    Catalog.Function.JSPlugin?.Dispatcher.Invoke(() => Catalog.Function.JSPlugin?.Append(LogPreProcessing.Color(type, line)));
-                    Catalog.Function.PluginCache.Add(new(type, line));
-                    if (Catalog.Function.PluginCache.Count > Global.Settings.Serein.MaxCacheLines)
-                    {
-                        Catalog.Function.PluginCache.RemoveRange(0, Catalog.Function.PluginCache.Count - Global.Settings.Serein.MaxCacheLines);
-                    }
-                    break;
-                case LogType.Plugin_Clear:
-                    Catalog.Function.JSPlugin?.Dispatcher.Invoke(() => Catalog.Function.JSPlugin?.PluginRichTextBox.Document.Blocks.Clear());
-                    Catalog.Function.PluginCache.Clear();
-                    break;
+                
                 case LogType.Version_New:
                     Catalog.Notification?.Show(
                         "Serein",

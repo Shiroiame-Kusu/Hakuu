@@ -1,5 +1,4 @@
 using Serein.Core.Generic;
-using Serein.Core.JSPlugin;
 using Serein.Core.Server;
 using Serein.Extensions;
 using System;
@@ -53,7 +52,7 @@ namespace Serein.Utils
         /// </summary>
         public static void Start()
         {
-            TaskRunner.Start();
+            //TaskRunner.Start();
             Heartbeat.Start();
             Update.Init();
             IO.StartSaving();
@@ -61,14 +60,9 @@ namespace Serein.Utils
             {
                 ShowWelcomePage();
             }
-            Task.Run(JSPluginManager.Load);
             Task.Run(() =>
             {
                 (Global.Settings.Serein.AutoRun.Delay > 0 ? Global.Settings.Serein.AutoRun.Delay : 0).ToSleep();
-                if (Global.Settings.Serein.AutoRun.ConnectWS || _args.Contains("auto_connect"))
-                {
-                    Task.Run(Websocket.Open);
-                }
                 if (Global.Settings.Serein.AutoRun.StartServer || _args.Contains("auto_start"))
                 {
                     Task.Run(ServerManager.Start);

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using Serein.Base.Packets;
-using Serein.Core.JSPlugin;
 using Serein.Utils;
 using System;
 using System.Collections.Generic;
@@ -37,72 +36,12 @@ namespace Serein.Core.Generic
         /// </summary>
         /// <param name="messagePacket">数据包</param>
         /// <param name="isSelfMessage">是否为自身消息</param>
-        public static void MatchMsg(Message messagePacket, bool isSelfMessage)
-        {
-            lock (Global.RegexList)
-            {
-                foreach (Base.Regex regex in Global.RegexList)
-                {
-                    if (
-                        string.IsNullOrEmpty(messagePacket?.RawMessage) ||
-                        string.IsNullOrEmpty(regex.Expression) || // 表达式为空
-                        regex.Area <= 1 ||  // 禁用或控制台
-                        !(isSelfMessage ^ regex.Area == 4) || // 自身消息与定义域矛盾
-                        !System.Text.RegularExpressions.Regex.IsMatch(messagePacket!.RawMessage, regex.Expression) || // 不匹配
-                        regex.Area == 2 && regex.Ignored.ToList().Contains(messagePacket.GroupId) ||
-                        regex.Area == 3 && regex.Ignored.ToList().Contains(messagePacket.UserId) // 忽略
-                        )
-                    {
-                        continue;
-                    }
-
-                    if (!IsAdmin(messagePacket) && regex.IsAdmin && !isSelfMessage)
-                    {
-                        switch (regex.Area)
-                        {
-                            case 2:
-                                EventTrigger.Trigger(Base.EventType.PermissionDeniedFromGroupMsg, messagePacket!);
-                                break;
-
-                            case 3:
-                                EventTrigger.Trigger(Base.EventType.PermissionDeniedFromPrivateMsg, messagePacket!);
-                                break;
-                        }
-                        continue;
-                    }
-
-                    if ((regex.Area == 4 || regex.Area == 2) && messagePacket.MessageType == "group" ||
-                        (regex.Area == 4 || regex.Area == 3) && messagePacket.MessageType == "private")
-                    {
-                        Command.Run(
-                            Base.CommandOrigin.Msg,
-                            regex.Command,
-                            System.Text.RegularExpressions.Regex.Match(
-                                messagePacket.RawMessage,
-                                regex.Expression
-                            ),
-                            messagePacket,
-                            false
-                        );
-                    }
-
-                }
-            }
-
-            if (messagePacket.MessageType == "group")
-            {
-                UpdateGroupCache(messagePacket);
-            }
-        }
 
         /// <summary>
         /// 判断是否为管理
         /// </summary>
         /// <param name="messagePacket">数据包</param>
         /// <returns>是否为管理</returns>
-        private static bool IsAdmin(Message messagePacket)
-            => Global.Settings.Bot.PermissionList.Contains(messagePacket.UserId) || Global.Settings.Bot.GivePermissionToAllAdmin && messagePacket.MessageType == "group" && messagePacket.Sender!.RoleIndex < 2;
-
         /// <summary>
         /// 更新群组缓存
         /// </summary>

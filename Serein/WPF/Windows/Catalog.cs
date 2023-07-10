@@ -24,11 +24,7 @@ namespace Serein.Windows
 
         public static class Function
         {
-            public static Regex? Regex { get; set; }
             public static Schedule? Schedule { get; set; }
-            public static Member? Member { get; set; }
-            public static Pages.Function.JSPlugin? JSPlugin { get; set; }
-            public static Pages.Function.Bot? Bot { get; set; }
             public static Pages.Function.Container? Container { get; set; }
             public static List<(Serein.Base.LogType, string)> BotCache = new();
             public static List<(Serein.Base.LogType, string)> PluginCache = new();
@@ -36,8 +32,6 @@ namespace Serein.Windows
 
         public static class Settings
         {
-            public static Event? Event { get; set; }
-            public static Pages.Settings.Bot? Bot { get; set; }
             public static Pages.Settings.Server? Server { get; set; }
             public static Pages.Settings.Serein? Serein { get; set; }
             public static Pages.Settings.Container? Container { get; set; }

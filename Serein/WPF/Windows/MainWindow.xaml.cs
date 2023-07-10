@@ -1,6 +1,5 @@
 ﻿using NCrontab;
 using Notification.Wpf;
-using Serein.Core.JSPlugin;
 using Serein.Core.Server;
 using Serein.Utils;
 using System;
@@ -69,10 +68,6 @@ namespace Serein.Windows
                 Hide();
                 Catalog.Notification?.Show("Serein", "服务器进程仍在运行中\n已自动最小化至托盘，点击托盘图标即可复原窗口");
             }
-            else
-            {
-                JSFunc.Trigger(Base.EventType.SereinClose);
-            }
         }
 
         private void Hide_Click(object sender, RoutedEventArgs e)
@@ -111,79 +106,7 @@ namespace Serein.Windows
         private void UiWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
             => ShowInTaskbar = IsVisible;
 
-        #region 成员编辑器代码
-
-        /// <summary>
-        /// 打开成员编辑器窗口
-        /// </summary>
-        public void OpenMemberEditor() => OpenMemberEditor(true, string.Empty, string.Empty);
-
-        /// <summary>
-        /// 打开成员编辑器窗口
-        /// </summary>
-        public void OpenMemberEditor(bool isNew, string id, string gameid)
-        {
-            MemberEditor_ID.Text = id;
-            MemberEditor_GameID.Text = gameid;
-            MemberEditor_ID.IsEnabled = isNew;
-            MemberEditor.Show();
-        }
-
-        private void MemberEditor_ButtonRightClick(object sender, RoutedEventArgs e) => MemberEditor.Hide();
-        private void MemberEditor_ButtonLeftClick(object sender, RoutedEventArgs e)
-        {
-            if (Catalog.Function.Member?.Confirm(MemberEditor_ID.Text, MemberEditor_GameID.Text) ?? false)
-            {
-                MemberEditor.Hide();
-            }
-        }
-        #endregion
-
-        #region 正则编辑器代码
-
-        /// <summary>
-        /// 打开正则编辑器窗口
-        /// </summary>
-        public void OpenRegexEditor() => OpenRegexEditor(0, false, string.Empty, string.Empty, string.Empty);
-
-        /// <summary>
-        /// 打开正则编辑器窗口
-        /// </summary>
-        public void OpenRegexEditor(int areaIndex, bool needAdmin, string regex, string command, string remark)
-        {
-            RegexEditor_Area.SelectedIndex = areaIndex;
-            RegexEditor_IsAdmain.IsChecked = needAdmin;
-            RegexEditor_Regex.Text = regex;
-            RegexEditor_Command.Text = command;
-            RegexEditor_Remark.Text = remark;
-            RegexEditor.Show();
-        }
-
-        private void RegexEditor_Area_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            RegexEditor_IsAdmain.IsEnabled = RegexEditor_Area.SelectedIndex >= 2 && RegexEditor_Area.SelectedIndex <= 3;
-            RegexEditor_IsAdmain.IsChecked = RegexEditor_IsAdmain.IsEnabled ? RegexEditor_IsAdmain.IsChecked : false;
-            if (RegexEditor_Area.SelectedIndex == 4)
-            {
-                OpenSnackbar("警告", "保存前请务必检查这条正则触发的命令是否会导致再次被所触发内容触发，\n配置错误可能导致机器人刷屏甚至被封号", SymbolRegular.Warning24);
-            }
-        }
-
-        private void RegexEditor_ButtonLeftClick(object sender, RoutedEventArgs e)
-        {
-            if (Catalog.Function.Regex?.Confirm(
-                RegexEditor_Area.SelectedIndex,
-                RegexEditor_IsAdmain.IsChecked ?? false,
-                RegexEditor_Regex.Text,
-                RegexEditor_Command.Text,
-                RegexEditor_Remark.Text) ?? false)
-            {
-                RegexEditor.Hide();
-            }
-        }
-
-        private void RegexEditor_ButtonRightClick(object sender, RoutedEventArgs e) => RegexEditor.Hide();
-        #endregion
+        
 
         #region 任务编辑器代码
         public void OpenScheduleEditor() => OpenScheduleEditor(string.Empty, string.Empty, string.Empty);
@@ -225,26 +148,7 @@ namespace Serein.Windows
         private void ScheduleEditor_ButtonRightClick(object sender, RoutedEventArgs e) => ScheduleEditor.Hide();
         #endregion
 
-        #region 事件编辑器代码
-        public void OpenEventEditor(string command)
-        {
-            EventEditor_Command.Text = command;
-            EventEditor.Show();
-        }
-
-        private void EventEditor_ButtonLeftClick(object sender, RoutedEventArgs e)
-        {
-            if (Catalog.Settings.Event?.Confirm(EventEditor_Command.Text) ?? false)
-            {
-                EventEditor.Hide();
-            }
-        }
-
-        private void EventEditor_ButtonRightClick(object sender, RoutedEventArgs e)
-        {
-            EventEditor.Hide();
-        }
-        #endregion
+        
 
         private void UiWindow_Drop(object sender, DragEventArgs e)
         {
@@ -281,15 +185,7 @@ namespace Serein.Windows
                 }
                 else if (Path.GetExtension(filename).ToLowerInvariant() == ".json" || Path.GetExtension(filename).ToLowerInvariant() == ".tsv")
                 {
-                    if (File.ReadAllText(filename).ToLowerInvariant().Contains("regex"))
-                    {
-                        if (Logger.MsgBox($"确定要从{Path.GetFileName(filename)}导入正则记录吗？", "Serein", 1, 48))
-                        {
-                            IO.ReadRegex(filename, Logger.MsgBox($"确定要合并正则记录吗？\n二者均将覆盖原有文件且不可逆", "Serein", 1, 48));
-                            Catalog.Function.Regex?.Load();
-                        }
-                    }
-                    else if (Logger.MsgBox($"确定要从{Path.GetFileName(filename)}导入定时任务吗？\n将覆盖原有文件且不可逆", "Serein", 1, 48))
+                    if (Logger.MsgBox($"确定要从{Path.GetFileName(filename)}导入定时任务吗？\n将覆盖原有文件且不可逆", "Serein", 1, 48))
                     {
                         IO.ReadSchedule(filename);
                         Catalog.Function.Schedule?.Load();

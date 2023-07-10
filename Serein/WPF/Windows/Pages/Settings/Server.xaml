@@ -159,7 +159,7 @@
                     Step="1"
                     TextChanged="Port_TextChanged"
                     ToolTip="指定服务器的本地端口（用于获取服务器的Motd）"
-                    Value="19132" />
+                    Value="25565" />
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1">
                 <TextBlock Text="行终止符" ToolTip="当前使用的行结束符字符串" />

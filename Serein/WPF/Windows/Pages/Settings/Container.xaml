@@ -27,14 +27,6 @@
                     Icon="Server24"
                     PageType="{x:Type pages:Server}" />
                 <ui:NavigationItem
-                    Content="机器人"
-                    Icon="Bot24"
-                    PageType="{x:Type pages:Bot}" />
-                <ui:NavigationItem
-                    Content="事件"
-                    Icon="BookInformation24"
-                    PageType="{x:Type pages:Event}" />
-                <ui:NavigationItem
                     Content="Serein"
                     Icon="WindowApps24"
                     PageType="{x:Type pages:Serein}" />

@@ -10,8 +10,6 @@ namespace Serein.Settings
         
         public Matches Matches = new();
         
-        public Bot Bot = new();
-        
         public Serein Serein = new();
         
         public Event Event = new();

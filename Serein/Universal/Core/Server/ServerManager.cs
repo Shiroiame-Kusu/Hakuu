@@ -1,7 +1,6 @@
 using Serein.Base;
 using Serein.Base.Motd;
 using Serein.Core.Generic;
-using Serein.Core.JSPlugin;
 using Serein.Extensions;
 using Serein.Utils;
 using System;
@@ -12,6 +11,7 @@ using System.Text;
 using RegExp = System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Documents;
 
 namespace Serein.Core.Server
 {
@@ -61,7 +61,7 @@ namespace Serein.Core.Server
         /// Motd对象
         /// </summary>
         public static Motd? Motd { get; private set; }
-
+        public static bool isJEServer { get; private set; }
         /// <summary>
         /// 更新计时器
         /// </summary>
@@ -91,7 +91,7 @@ namespace Serein.Core.Server
         /// 命令历史记录
         /// </summary>
         public static readonly List<string> CommandHistory = new();
-
+        public static ProcessStartInfo ServerStartInfo { get; set; }
         /// <summary>
         /// 编码列表
         /// </summary>
@@ -159,18 +159,42 @@ namespace Serein.Core.Server
                 Logger.Output(LogType.Server_Clear);
 #endif
                 Logger.Output(LogType.Server_Notice, "启动中");
-
+                string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                
                 #region 主变量初始化
-                _serverProcess = Process.Start(new ProcessStartInfo(Global.Settings.Server.Path)
+                if (ServerType == "jar")
                 {
-                    FileName = Global.Settings.Server.Path,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardInput = true,
-                    StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
-                    WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
-                });
+                    ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
+                    {
+
+                        FileName = "java",
+                        Arguments = " -jar " + Global.Settings.Server.Path + " --nogui",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = true,
+                        StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
+                        WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
+                    };
+                    StartInfo = ServerStartInfo;
+                }
+                else
+                {
+                    ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
+                    {
+
+                        FileName = Global.Settings.Server.Path,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = true,
+                        StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
+                        WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
+                    };
+                    StartInfo = ServerStartInfo;
+                }
+
+                _serverProcess = Process.Start(StartInfo);
                 _serverProcess!.EnableRaisingEvents = true;
                 _serverProcess.Exited += (_, _) => CloseAll();
                 _inputWriter = new(
@@ -183,7 +207,7 @@ namespace Serein.Core.Server
                 };
                 _serverProcess.BeginOutputReadLine();
                 _serverProcess.OutputDataReceived += SortOutputHandler;
-                #endregion
+
 
                 #region 变量初始化
                 _restart = false;
@@ -196,21 +220,21 @@ namespace Serein.Core.Server
                 _prevProcessCpuTime = TimeSpan.Zero;
                 #endregion
 
-                #region 服务器启动后相关调用
                 Task.Run(() =>
                 {
                     EventTrigger.Trigger(EventType.ServerStart);
-                    JSFunc.Trigger(EventType.ServerStart);
                     _updateTimer = new(2000) { AutoReset = true };
                     _updateTimer.Elapsed += (_, _) => UpdateInfo();
                     _updateTimer.Start();
                 });
-                return true;
                 #endregion
             }
             return false;
         }
-
+        public static void MainProcess()
+        {   
+            
+        }
         /// <summary>
         /// 关闭服务器
         /// </summary>
@@ -386,7 +410,6 @@ namespace Serein.Core.Server
                 }
                 _inputWriter?.WriteLine(line_copy);
                 IO.ConsoleLog(">" + command);
-                Task.Run(() => JSFunc.Trigger(EventType.ServerSendCommand, command));
             }
             else if (isFromCommand)
             {
@@ -427,8 +450,6 @@ namespace Serein.Core.Server
                     }
                 }
                 bool interdicted = false;
-                interdicted = JSFunc.Trigger(EventType.ServerOutput, lineFiltered) || interdicted;
-                interdicted = JSFunc.Trigger(EventType.ServerOriginalOutput, e.Data) || interdicted;
                 if (!excluded && !interdicted)
                 {
                     Logger.Output(LogType.Server_Output, e.Data);
@@ -448,11 +469,10 @@ namespace Serein.Core.Server
                         {
                             string tempLine = _tempLine + "\n" + lineFiltered;
                             _tempLine = string.Empty;
-                            Matcher.Process(tempLine);
                         }
                         else
                         {
-                            Matcher.Process(lineFiltered);
+
                         }
                     }
                 }
@@ -490,7 +510,6 @@ namespace Serein.Core.Server
             }
             LevelName = string.Empty;
             Difficulty = string.Empty;
-            JSFunc.Trigger(EventType.ServerStop, _serverProcess.ExitCode);
         }
 
         /// <summary>
@@ -569,6 +588,8 @@ namespace Serein.Core.Server
         /// </summary>
         /// <returns>运行时间</returns>
         public static string Time => Status && _serverProcess is not null ? (DateTime.Now - _serverProcess.StartTime).ToCustomString() : string.Empty;
+
+        public static ProcessStartInfo StartInfo { get; private set; }
 
         /// <summary>
         /// Unicode转换

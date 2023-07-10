@@ -1,5 +1,4 @@
 using Serein.Base;
-using Serein.Core.JSPlugin.Permission;
 using Serein.Settings;
 using System;
 using System.Collections.Generic;
@@ -53,19 +52,8 @@ namespace Serein
         /// <summary>
         /// 正则项列表
         /// </summary>
-        public static List<Regex> RegexList
-        {
-            get => _regexList;
-            set
-            {
-                lock (_regexList)
-                {
-                    _regexList = value;
-                }
-            }
-        }
+        
 
-        private static List<Regex> _regexList = new();
 
         /// <summary>
         /// 任务项列表
@@ -88,7 +76,6 @@ namespace Serein
         /// <summary>
         /// 成员项字典
         /// </summary>
-        public static Dictionary<long, Member> MemberDict = new();
 
         /// <summary>
         /// 设置项
@@ -108,33 +95,6 @@ namespace Serein
         /// <summary>
         /// 群组用户信息缓存
         /// </summary>
-        public static Dictionary<long, Dictionary<long, Member>> GroupCache = new();
-
-        /// <summary>
-        /// 权限组
-        /// </summary>
-        public static Dictionary<string, PermissionGroup> PermissionGroups = new()
-        {
-            {
-                "default",
-                new()
-                {
-                    Description = "Serein的默认权限组",
-                    Priority = 0,
-                    Conditions = new Condition[]
-                    {
-                        new()
-                        {
-                            Type = "group",
-                            OnlyListened = true
-                        },
-                        new()
-                        {
-                            Type = "private"
-                        }
-                    }
-                }
-            }
-        };
+        
     }
 }

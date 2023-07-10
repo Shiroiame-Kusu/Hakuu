@@ -18,8 +18,5 @@
     <Page Update="Windows\Pages\Function\Container.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Windows\Pages\Function\Bot.xaml">
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 </Project>

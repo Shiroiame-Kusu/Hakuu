@@ -25,6 +25,27 @@
 
 	<ItemGroup>
 		<Compile Include="../Universal/**/*.cs" />
+		<Compile Remove="..\Universal\Base\Member.cs" />
+		<Compile Remove="..\Universal\Base\Regex.cs" />
+		<Compile Remove="..\Universal\Core\Generic\Binder.cs" />
+		<Compile Remove="..\Universal\Core\Generic\Matcher.cs" />
+		<Compile Remove="..\Universal\Core\Generic\PacketHandler.cs" />
+		<Compile Remove="..\Universal\Core\Generic\ScheduleRunner.cs" />
+		<Compile Remove="..\Universal\Core\Generic\Websocket.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\JSEngineFactory.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\JSFunc.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\JSPluginManager.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Native\Logger.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Native\MessageBus.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Native\PluginBase.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Native\PluginStruct.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Native\WSClient.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Permissions\Condition.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Permissions\PermissionGroup.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Permissions\PermissionManager.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\Plugin.cs" />
+		<Compile Remove="..\Universal\Core\JSPlugin\PreLoadConfig.cs" />
+		<Compile Remove="..\Universal\Settings\Bot.cs" />
 		<Content Include="..\Universal\Sources\Serein.ico" />
 		<Resource Include="..\Universal\Sources\Serein.ico" />
 		<Resource Include="Windows\Serein.ico" />

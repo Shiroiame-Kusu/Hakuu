@@ -103,7 +103,7 @@
                 Grid.Column="3"
                 Content="下载最新版"
                 Icon="Link48"
-                NavigateUri="https://github.com/Zaitonn/Serein/releases/latest" />
+                NavigateUri="https://github.com/Shiroame-Kusu/Serein/releases/latest" />
         </Grid>
     </StackPanel>
 </ui:UiPage>

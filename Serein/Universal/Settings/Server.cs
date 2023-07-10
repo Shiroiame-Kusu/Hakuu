@@ -29,7 +29,7 @@ namespace Serein.Settings
         
         public string Path = string.Empty;
         
-        public int Port = 19132;
+        public int Port = 25565;
         
         public string[] StopCommands = { "stop" };
         
