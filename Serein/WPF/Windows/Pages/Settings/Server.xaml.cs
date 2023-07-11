@@ -33,6 +33,7 @@ namespace Serein.Windows.Pages.Settings
             Path.Text = Global.Settings.Server.Path;
             Port.Value = Global.Settings.Server.Port;
             LineTerminator.Text = Global.Settings.Server.LineTerminator.Replace("\r", "\\r").Replace("\n", "\\n");
+
         }
 
         private void StopCommands_TextChanged(object sender, TextChangedEventArgs e)

@@ -108,7 +108,7 @@
                 <ComboBox
                     Name="Type"
                     HorizontalAlignment="Left"
-                    SelectedIndex="1"
+                    SelectedIndex="2"
                     SelectionChanged="Type_SelectionChanged">
                     <ComboBoxItem Content="未知/其他" ToolTip="不指定任何类型（将禁用Motd获取）" />
                     <ComboBoxItem Content="基岩版" ToolTip="Minecraft: Bedrock Edition" />

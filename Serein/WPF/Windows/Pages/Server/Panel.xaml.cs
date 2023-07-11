@@ -15,7 +15,7 @@ namespace Serein.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
-            
+            MaxRAM.Text = Global.Settings.Server.MaxRAM;
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();
             PanelRichTextBox.Document.Blocks.Clear();
@@ -124,6 +124,7 @@ namespace Serein.Windows.Pages.Server
                 Time.Content = ServerManager.Status ? ServerManager.Time : "-";
                 CPUPerc.Content = ServerManager.Status ? "%" + ServerManager.CPUUsage.ToString("N1") : "-";
                 Catalog.MainWindow?.UpdateTitle(ServerManager.Status ? ServerManager.StartFileName : null);
+                
             });
     }
 }

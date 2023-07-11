@@ -35,6 +35,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <DockPanel>
                         <Label Content="状态" DockPanel.Dock="Left" />
@@ -85,6 +86,15 @@
                         <Label Content="进程占用" DockPanel.Dock="Left" />
                         <Label
                             Name="CPUPerc"
+                            DockPanel.Dock="Left"
+                            FlowDirection="RightToLeft">
+                            -
+                        </Label>
+                    </DockPanel>
+                    <DockPanel Grid.Row="6">
+                        <Label Content="Java版本" DockPanel.Dock="Left" />
+                        <Label
+                            Name="JavaVersion"
                             DockPanel.Dock="Left"
                             FlowDirection="RightToLeft">
                             -

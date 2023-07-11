@@ -93,7 +93,11 @@ namespace Serein.Core.Server
         public static readonly List<string> CommandHistory = new();
 
         public static string? JEOptimizationArguments { get; set; }
-        public static string? JEStartMaxRam { get; set; } 
+        public static string? JEStartMaxRam { get; set; }
+        public static string? JavaVersion { get; set; }
+        public static int? JavaVersionNumber { get; set; }
+        public static bool AbleToUse_incubator_vector { get; set;}
+        public static string? Use_incubator_vector {get; set;}
 
         /// <summary>
         /// 编码列表
@@ -162,16 +166,45 @@ namespace Serein.Core.Server
                 Logger.Output(LogType.Server_Clear);
 #endif
                 Logger.Output(LogType.Server_Notice, "启动中");
+                
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                if(Global.Settings.Server.MaxRAM != null)
+                if(Global.Settings.Server.MaxRAM == null || Global.Settings.Server.MaxRAM == "")
                 {
-                    ServerManager.JEStartMaxRam = Global.Settings.Server.MaxRAM;
+                    Logger.MsgBox("最大内存为空", "Serein", 0, 48);
+                    return false;
                 }
                 else
                 {
-                    ServerManager.JEStartMaxRam = "2048";
+                    JEStartMaxRam = Global.Settings.Server.MaxRAM;
                 }
-                
+                try
+                {
+                    ProcessStartInfo defaultJava = new ProcessStartInfo();
+                    defaultJava.FileName = "java.exe";
+                    defaultJava.Arguments = " -version";
+                    defaultJava.RedirectStandardError = true;
+                    defaultJava.UseShellExecute = false;
+                    defaultJava.CreateNoWindow = true;
+
+                    Process pr = Process.Start(defaultJava);
+                    JavaVersion = pr.StandardError.ReadLine().Split(' ')[2].Replace("\"", "");
+                    JavaVersionNumber = int.Parse(JavaVersion.Substring(0, 2));
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception is " + ex.Message);
+                }
+                if(JavaVersionNumber == 16 || JavaVersionNumber == 17 || JavaVersionNumber == 18 || JavaVersionNumber == 19)
+                {
+                    AbleToUse_incubator_vector = true;
+                    Use_incubator_vector = " --add-modules=jdk.incubator.vector";
+                }
+                else
+                {
+                    Use_incubator_vector = "";
+                }
+
                 #region 主变量初始化
                 if (ServerType == "jar")
                 {
@@ -179,7 +212,7 @@ namespace Serein.Core.Server
                     float AvailableRAM = ramCounter.NextValue();
                     if(AvailableRAM >= 12288)
                     {
-                        ServerManager.JEOptimizationArguments = "--add-modules=jdk.incubator.vector -XX:+UseG1GC " +
+                        JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
                             "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
                             "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
                             "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
@@ -188,7 +221,7 @@ namespace Serein.Core.Server
                     }
                     else
                     {
-                        ServerManager.JEOptimizationArguments = "--add-modules=jdk.incubator.vector -XX:+UseG1GC " +
+                        JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
                             "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
                             "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
                             "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
@@ -199,7 +232,7 @@ namespace Serein.Core.Server
                     {
 
                         FileName = "java",
-                        Arguments = " -jar -Xmx" + JEStartMaxRam + "M " + ServerManager.JEOptimizationArguments + Global.Settings.Server.Path + " --nogui",
+                        Arguments = " -jar -Xmx" + JEStartMaxRam + "M " + JEOptimizationArguments + Global.Settings.Server.Path + " --nogui",
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
@@ -224,7 +257,7 @@ namespace Serein.Core.Server
                     };
                     StartInfo = ServerStartInfo;
                 }
-
+                
                 _serverProcess = Process.Start(StartInfo);
                 _serverProcess!.EnableRaisingEvents = true;
                 _serverProcess.Exited += (_, _) => CloseAll();
