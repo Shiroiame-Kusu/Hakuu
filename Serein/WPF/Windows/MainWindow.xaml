@@ -8,7 +8,7 @@
     xmlns:home_page="clr-namespace:Serein.Windows.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:server_pages="clr-namespace:Serein.Windows.Pages.Server"
-    xmlns:settgings_pages="clr-namespace:Serein.Windows.Pages.Settings"
+    xmlns:settings_pages="clr-namespace:Serein.Windows.Pages.Settings"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Serein"
     Width="800"
@@ -105,7 +105,7 @@
                             x:Name="SettingsNavigationItem"
                             Content="设置"
                             Icon="Settings24"
-                            PageType="{x:Type settgings_pages:Container}" />
+                            PageType="{x:Type settings_pages:Container}" />
                     </ui:NavigationStore.Footer>
                 </ui:NavigationStore>
                 <Border

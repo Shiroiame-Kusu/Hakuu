@@ -10,6 +10,7 @@ namespace Serein.Windows.Pages.Server
             InitializeComponent();
             PanelNavigationItem.Visibility = Global.Settings.Serein.PagesDisplayed.ServerPanel ? Visibility.Visible : Visibility.Hidden;
             PluginManagerNavigationItem.Visibility = Global.Settings.Serein.PagesDisplayed.ServerPluginManager ? Visibility.Visible : Visibility.Hidden;
+            DownloadServerNavigationItem.Visibility = Global.Settings.Serein.PagesDisplayed.DownloadServer ? Visibility.Visible : Visibility.Hidden;
             if (Global.Settings.Serein.PagesDisplayed.ServerPanel)
             {
                 Navigation.Navigate(0);
@@ -17,6 +18,10 @@ namespace Serein.Windows.Pages.Server
             else if (Global.Settings.Serein.PagesDisplayed.ServerPluginManager)
             {
                 Navigation.Navigate(1);
+            }
+            else if (Global.Settings.Serein.PagesDisplayed.DownloadServer)
+            {
+                Navigation.Navigate(2);
             }
             else
             {

@@ -20,7 +20,7 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.2.0-A1";
+        public const string VERSION = "v0.3.0-A1";
 
         /// <summary>
         /// 类型
@@ -91,6 +91,6 @@ namespace Serein
         /// 编译信息
         /// </summary>
         public static readonly BuildInfo BuildInfo = new();
-
+        public static Array? ServerFileAPI;
     }
 }

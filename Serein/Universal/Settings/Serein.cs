@@ -74,6 +74,7 @@ namespace Serein.Settings
         public bool
         ServerPanel = true,
         ServerPluginManager = true,
+        DownloadServer = true,
         RegexList = true,
         Schedule = true,
         Bot = true,

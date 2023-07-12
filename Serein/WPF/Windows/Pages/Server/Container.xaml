@@ -34,6 +34,12 @@
                     Icon="PuzzlePiece24"
                     PageTag="plugins"
                     PageType="{x:Type pages:Plugins}" />
+                <ui:NavigationItem
+                    x:Name="DownloadServerNavigationItem"
+                    Content="服务端下载"
+                    Icon="ArrowDownload24"
+                    PageTag="download"
+                    PageType="{x:Type pages:Download}" />
             </ui:NavigationCompact.Items>
         </ui:NavigationCompact>
         <Border

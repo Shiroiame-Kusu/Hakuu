@@ -27,6 +27,7 @@ namespace Serein.Utils
             _checkTimer.Elapsed += (_, _) => CheckVersion();
             _checkTimer.Start();
             AppDomain.CurrentDomain.ProcessExit += (_, _) => StartUpdater();
+
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace Serein.Utils
             }
             try
             {
-                JObject? jsonObject = (JsonConvert.DeserializeObject<JObject>(Net.Get("https://api.github.com/repos/Zaitonn/Serein/releases/latest", "application/vnd.github.v3+json", "Serein").Await().Content.ReadAsStringAsync().Await()));
+                JObject? jsonObject = (JsonConvert.DeserializeObject<JObject>(Net.Get("https://api.github.com/repos/Shiroiame-Kusu/Serein/releases/latest", "application/vnd.github.v3+json", "Serein").Await().Content.ReadAsStringAsync().Await()));
                 if (jsonObject is null)
                 {
                     return;
