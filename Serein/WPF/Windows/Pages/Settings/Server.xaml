@@ -39,6 +39,28 @@
                 Icon="OpenFolder24" />
         </Grid>
         <TextBlock
+            Name="JavaPathBox_A"
+    HorizontalAlignment="Left"
+    Text="Java路径"
+    ToolTip="Java环境路径" />
+        <Grid Name="JavaPathBox_B">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+        Name="JavaSEPath"
+        IsReadOnly="True"
+        ToolTip="Java环境路径" />
+            <ui:Button
+        x:Name="SelectJava"
+        Grid.Column="1"
+        Margin="5,0,0,0"
+        Click="SelectJava_Click"
+        Content="选择文件"
+        Icon="OpenFolder24" />
+        </Grid>
+        <TextBlock
             HorizontalAlignment="Left"
             Text="关服指令（一行一条）"
             ToolTip="使用关服功能时执行的命令" />

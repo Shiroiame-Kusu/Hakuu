@@ -99,12 +99,6 @@
                             Icon="Box24"
                             PageTag="functions"
                             PageType="{x:Type function_pages:Container}" />
-                        <ui:NavigationItem
-                            x:Name="DebugNavigationItem"
-                            Content="调试输出"
-                            Icon="WindowDevTools24"
-                            PageTag="debug"
-                            PageType="{x:Type debug_page:Debug}" />
                     </ui:NavigationStore.Items>
                     <ui:NavigationStore.Footer>
                         <ui:NavigationItem

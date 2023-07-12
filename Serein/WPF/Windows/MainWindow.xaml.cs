@@ -22,7 +22,6 @@ namespace Serein.Windows
         {
             InitializeComponent();
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            DebugNavigationItem.Visibility = Global.Settings.Serein.DevelopmentTool.EnableDebug ? Visibility.Visible : Visibility.Hidden;
             SettingsNavigationItem.Visibility = Global.Settings.Serein.PagesDisplayed.Settings ? Visibility.Visible : Visibility.Hidden;
             if (!Global.Settings.Serein.PagesDisplayed.ServerPanel && !Global.Settings.Serein.PagesDisplayed.ServerPluginManager)
             {

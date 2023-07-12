@@ -168,7 +168,7 @@ namespace Serein.Core.Server
                 Logger.Output(LogType.Server_Notice, "启动中");
                 
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                if(Global.Settings.Server.MaxRAM == null || Global.Settings.Server.MaxRAM == "")
+                if(string.IsNullOrEmpty(Global.Settings.Server.MaxRAM) == true)
                 {
                     Logger.MsgBox("最大内存为空", "Serein", 0, 48);
                     return false;
@@ -177,10 +177,21 @@ namespace Serein.Core.Server
                 {
                     JEStartMaxRam = Global.Settings.Server.MaxRAM;
                 }
+                string? JavaPathSettings = Global.Settings.Server.JavaPath;
+                if (string.IsNullOrEmpty(JavaPathSettings) == true){
+                    bool status = string.IsNullOrEmpty(JavaPathSettings);
+                    CurrentJavaPath = "java";
+                }
+                else
+                {   
+                    
+                    string.IsNullOrEmpty(JavaPathSettings);
+                    CurrentJavaPath = Global.Settings.Server.JavaPath;
+                }
                 try
                 {
                     ProcessStartInfo defaultJava = new ProcessStartInfo();
-                    defaultJava.FileName = "java.exe";
+                    defaultJava.FileName = CurrentJavaPath;
                     defaultJava.Arguments = " -version";
                     defaultJava.RedirectStandardError = true;
                     defaultJava.UseShellExecute = false;
@@ -231,7 +242,7 @@ namespace Serein.Core.Server
                     ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
                     {
 
-                        FileName = "java",
+                        FileName = CurrentJavaPath,
                         Arguments = " -jar -Xmx" + JEStartMaxRam + "M " + JEOptimizationArguments + Global.Settings.Server.Path + " --nogui",
                         UseShellExecute = false,
                         CreateNoWindow = true,
@@ -579,13 +590,10 @@ namespace Serein.Core.Server
         /// <summary>
         /// 重启请求
         /// </summary>
-        public static void RestartRequest()
+        public static void RequestRestart()
         {
-            if (!_restart)
-            {
-                _restart = false;
-                Stop();
-            }
+            _restart = true;
+            Stop();
         }
 
         /// <summary>
@@ -654,6 +662,7 @@ namespace Serein.Core.Server
         public static string Time => Status && _serverProcess is not null ? (DateTime.Now - _serverProcess.StartTime).ToCustomString() : string.Empty;
 
         public static ProcessStartInfo StartInfo { get; private set; }
+        public static string? CurrentJavaPath { get; private set; }
 
         /// <summary>
         /// Unicode转换

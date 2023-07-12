@@ -37,7 +37,7 @@ namespace Serein.Windows.Pages.Server
             => ServerManager.Stop();
 
         private void Restart_Click(object sender, RoutedEventArgs e)
-            => ServerManager.RestartRequest();
+            => ServerManager.RequestRestart();
 
         private void Kill_Click(object sender, RoutedEventArgs e)
         {
@@ -124,6 +124,7 @@ namespace Serein.Windows.Pages.Server
                 Time.Content = ServerManager.Status ? ServerManager.Time : "-";
                 CPUPerc.Content = ServerManager.Status ? "%" + ServerManager.CPUUsage.ToString("N1") : "-";
                 Catalog.MainWindow?.UpdateTitle(ServerManager.Status ? ServerManager.StartFileName : null);
+                JavaVersion.Content = ServerManager.JavaVersion;
                 
             });
     }

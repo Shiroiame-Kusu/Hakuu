@@ -35,6 +35,8 @@ namespace Serein.Settings
         
         public int Type = 2;
 
-        public string MaxRAM;
+        public string? MaxRAM;
+
+        public string? JavaPath;
     }
 }
