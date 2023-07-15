@@ -26,7 +26,7 @@
                 DockPanel.Dock="Top"
                 Header="服务端名"
                 MinWidth="200">
-                <ComboBox Name="ServerDownloadName" SelectionChanged="ServerDownloadName_SelectionChanged">
+                <ComboBox Name="ServerDownloadName" SelectedItem="" SelectionChanged="ServerDownloadName_SelectionChanged">
 
                 </ComboBox>
             </GroupBox>
@@ -37,7 +37,7 @@ DockPanel.Dock="Top"
 Header="服务端版本"
     MinWidth="200">
 
-                <ComboBox Name="ServerDownloadVersion">
+                <ComboBox Name="ServerDownloadVersion" SelectedItem="" SelectionChanged="ServerDownloadVersion_SelectionChanged">
 
                 </ComboBox>
 
@@ -49,7 +49,9 @@ Header="服务端版本"
     HorizontalAlignment="Center"
     MinWidth="180"
     DockPanel.Dock="Bottom"
+    IsEnabled="False"
 Click="ServerDownload"
+                Name="DownloadButton"
     Content="开始下载"/>
         </StackPanel>
         <GroupBox 
@@ -65,7 +67,9 @@ Click="ServerDownload"
     IsReadOnly="True"
     IsUndoEnabled="False"
     
-    UndoLimit="0" />
+    UndoLimit="0" 
+                AcceptsReturn="True"
+                    TextWrapping="Wrap"/>
             </DockPanel>
             
         </GroupBox>
