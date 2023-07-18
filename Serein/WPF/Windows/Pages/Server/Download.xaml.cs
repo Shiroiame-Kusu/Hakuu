@@ -24,6 +24,7 @@ using Wpf.Ui.Dpi;
 using Downloader;
 using System.Reflection;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -44,6 +45,23 @@ namespace Serein.Windows.Pages.Server
         public static long TotalByteToReceive {get; set; }
         public static long ByteReceived {get; set; }
         public static string ReceivedPrecent {get; set; }
+        public static DownloadConfiguration downloadOpt = new DownloadConfiguration()
+        {
+            MaxTryAgainOnFailover = 5, // 失败的最大次数
+            ReserveStorageSpaceBeforeStartingDownload = true,
+            Timeout = 1000, // 每个 stream reader  的超时（毫秒），默认值是1000
+            RequestConfiguration = // 定制请求头文件
+                {
+                    Accept = "*/*",
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                    CookieContainer =  new CookieContainer(), // Add your cookies
+                    Headers = new WebHeaderCollection(), // Add your custom headers
+                    KeepAlive = true,
+                    ProtocolVersion = HttpVersion.Version11, // Default value is HTTP 1.1
+                    UseDefaultCredentials = false,
+                    UserAgent = $"DownloaderSample/{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}"
+                }
+        };
 
         public Download()
         {
@@ -76,8 +94,18 @@ namespace Serein.Windows.Pages.Server
                 }
                 JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
                 Directory.CreateDirectory(ServerPath + "\\");
-                await Downloader("https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"]["core_version"]);
-                }catch (Exception ex){
+                Task.Run(() =>
+                {
+                    while (true)
+                    { 
+                        Thread.Sleep(1000);
+
+                    }
+                });
+                    var url = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"]["core_version"];
+                await DownloadFileAsync(url,ServerPath + "\\server.jar");
+                }
+            catch (Exception ex){
                 
 
                 }
@@ -85,60 +113,7 @@ namespace Serein.Windows.Pages.Server
             
             
         }
-        private static async Task Downloader(string url)
-        {   
-            
-            var downloadOpt = new DownloadConfiguration()
-            {
-                BufferBlockSize = 10240, // 通常，主机最大支持8000字节，默认值为8000。
-                ChunkCount = 8, // 要下载的文件分片数量，默认值为1
-                MaximumBytesPerSecond = 0, // 下载速度限制为1MB/s，默认值为零或无限制
-                MaxTryAgainOnFailover = 5, // 失败的最大次数
-                ParallelDownload = true, // 下载文件是否为并行的。默认值为false
-                MaximumMemoryBufferBytes = 50,
-                ReserveStorageSpaceBeforeStartingDownload = true,
-
-                Timeout = 1000, // 每个 stream reader  的超时（毫秒），默认值是1000
-                RequestConfiguration = // 定制请求头文件
-                {        
-                    Accept = "*/*",        
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,        
-                    CookieContainer =  new CookieContainer(), // Add your cookies
-                    Headers = new WebHeaderCollection(), // Add your custom headers
-                    KeepAlive = true,        
-                    ProtocolVersion = HttpVersion.Version11, // Default value is HTTP 1.1
-                    UseDefaultCredentials = false,        
-                    UserAgent = $"DownloaderSample/{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}"    
-                }
-            };
-            var downloader = new DownloadService(downloadOpt);
-            downloader.DownloadStarted += OnDownloadStarted;
-            //downloader.ChunkDownloadProgressChanged += OnChunkDownloadProgressChanged;
-            downloader.DownloadProgressChanged += OnDownloadProgressChanged;
-            downloader.DownloadFileCompleted += OnDownloadFileCompleted;
-
-            await downloader.DownloadFileTaskAsync(url, ServerPath + "\\server.jar");
-        }
-
-        private static void OnDownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
-        {
-            
-        }
-
-        private static void OnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs e)
-        {
-            Download download = new Download();
-            ByteReceived = e.ReceivedBytesSize;
-            ReceivedPrecent = (ByteReceived / TotalByteToReceive).ToString();
-            download.ServerDownloadLogTextBox.AppendText($"已下载{ReceivedPrecent}");
-        }
-
-        private static void OnDownloadStarted(object? sender, DownloadStartedEventArgs e)
-        {
-            TotalByteToReceive = e.TotalBytesToReceive;
-            
-
-        }
+        
 
         private async void LoadAPIInfo()
         {
@@ -207,6 +182,57 @@ namespace Serein.Windows.Pages.Server
                 DownloadButton.IsEnabled = true;
             }
             
+        }
+        public static async Task<bool> DownloadFileAsync(string url, string fileName, Action<double> progress = default, CancellationToken cancelationToken = default)
+        {
+            try
+            {
+                // 使用HttpClient类创建一个HTTP客户端，指定不使用代理,并设置一个 CookieContainer
+                using (var httpClient = new HttpClient(new HttpClientHandler() { CookieContainer = new CookieContainer(), UseProxy = false }))
+                //using (var httpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() { Proxy = null, CookieContainer = new System.Net.CookieContainer() }))
+                {
+                    // 发送GET请求，并等待响应
+                    var response = await httpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
+                    // 判断请求是否成功,如果失败则返回 false
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return (false);
+                    }
+                    // 获取响应内容长度
+                    long contentLength = response.Content.Headers.ContentLength ?? 0;
+                    // 创建一个文件流，并将响应内容写入文件流
+                    using (var fs = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+                    {
+                        // 创建一个缓冲区，大小为64KB
+                        byte[] buffer = new byte[65536];
+                        // 获取响应流
+                        var httpStream = await response.Content.ReadAsStreamAsync();
+                        // 定义变量，用于记录每次读取的字节数
+                        int readLength = 0;
+                        // 循环异步读取响应流的内容，直到读取完毕
+                        while ((readLength = await httpStream.ReadAsync(buffer, 0, buffer.Length, cancelationToken)) > 0)
+                        {
+                            // 检查是否已经取消了任务
+                            if (cancelationToken.IsCancellationRequested)
+                            {
+                                // 如果任务已经取消，关闭文件流，并删除已经下载的文件
+                                fs.Close();
+                                File.Delete(fileName);
+                                return (false);
+                            }
+                            await fs.WriteAsync(buffer, 0, readLength, cancelationToken);
+                            progress?.Invoke(Math.Round((double)fs.Length / contentLength * 100, 2));
+                        }
+                    }
+                }
+                // 返回true表示文件下载成功
+                return (true);
+            }
+            catch (Exception)
+            {
+                // 返回false表示文件下载失败
+                return (false);
+            }
         }
     }
 }
