@@ -9,7 +9,7 @@ namespace Serein.Settings
         /// <summary>
         /// 自动更新
         /// </summary>
-        public bool AutoUpdate;
+        public bool AutoUpdate = true;
 
         /// <summary>
         /// 彩色输出（仅命令行）
@@ -29,7 +29,7 @@ namespace Serein.Settings
         /// <summary>
         /// 最大缓存行数（仅Winfom、WPF）
         /// </summary>
-        public int MaxCacheLines = 250;
+        public int MaxCacheLines = 200;
         
         /// <summary>
         /// 主题跟随系统（仅WPF）

@@ -9,7 +9,7 @@ namespace Serein.Settings
     {
         public bool AutoStop = true;
         
-        public bool EnableRestart;
+        public bool EnableRestart = true;
         
         public bool EnableOutputCommand = true;
         
