@@ -10,9 +10,6 @@ on:
 jobs:
   BuildForWindows:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        project: [Console, WPF]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -35,49 +32,49 @@ jobs:
         run: dotnet restore
 
       - name: Build the project(Release)
-        run: dotnet build -p:Configuration=Release "Serein/${{ matrix.project }}/Serein-${{ matrix.project }}.csproj"
+        run: dotnet build -p:Configuration=Release "Serein/WPF/Serein-WPF.csproj"
 
       - name: Build the project(Debug)
-        run: dotnet build "Serein/${{ matrix.project }}/Serein-${{ matrix.project }}.csproj"
+        run: dotnet build "Serein/WPF/Serein-WPF.csproj"
 
       - name: Upload Serein(Release,dotnet6-windows)
         uses: actions/upload-artifact@v3
         with:
-          name: Serein_${{ matrix.project }}_dotnet6
-          path: ${{ github.workspace }}\Serein\${{ matrix.project }}\bin\Release\net6.0-windows
+          name: Serein_WPF_dotnet6
+          path: ${{ github.workspace }}\Serein\WPF\bin\Release\net6.0-windows
           if-no-files-found: ignore
 
       - name: Upload Serein(Release,dotnetframework472)
         uses: actions/upload-artifact@v3
         with:
-          name: Serein_${{ matrix.project }}_dotnetframework472
-          path: ${{ github.workspace }}\Serein\${{ matrix.project }}\bin\Release\net472
+          name: Serein_WPF_dotnetframework472
+          path: ${{ github.workspace }}\Serein\WPF\bin\Release\net472
           if-no-files-found: ignore
 
       - name: Upload Serein(Debug,dotnet6-windows)
         uses: actions/upload-artifact@v3
         with:
-          name: Serein_${{ matrix.project }}_dotnet6_debug
-          path: ${{ github.workspace }}\Serein\${{ matrix.project }}\bin\Debug\net6.0-windows
+          name: Serein_WPF_dotnet6_debug
+          path: ${{ github.workspace }}\Serein\WPF\bin\Debug\net6.0-windows
           if-no-files-found: ignore
 
       - name: Upload Serein(Debug,dotnetframework472)
         uses: actions/upload-artifact@v3
         with:
-          name: Serein_${{ matrix.project }}_dotnetframework472_debug
-          path: ${{ github.workspace }}\Serein\${{ matrix.project }}\bin\Debug\net472
+          name: Serein_WPF_dotnetframework472_debug
+          path: ${{ github.workspace }}\Serein\WPF\bin\Debug\net472
           if-no-files-found: ignore
 
       - name: Build the project(Publish)
         run: |
           dotnet clean
-          dotnet publish "Serein/${{ matrix.project }}/Serein-${{ matrix.project }}.csproj" -f net6.0-windows --no-self-contained -p:PublishSingleFile=true -p:RuntimeIdentifier=win-x64 -p:IncludeContentInSingleFile=true
+          dotnet publish "Serein/WPF/Serein-WPF.csproj" -f net6.0-windows --no-self-contained -p:PublishSingleFile=true -p:RuntimeIdentifier=win-x64 -p:IncludeContentInSingleFile=true
 
       - name: Upload Serein(Publish)
         uses: actions/upload-artifact@v3
         with:
-          name: Serein_${{ matrix.project }}_dotnet6_publish
-          path: ${{ github.workspace }}\Serein\${{ matrix.project }}\bin\Debug\net6.0-windows\win-x64\publish
+          name: Serein_WPF_dotnet6_publish
+          path: ${{ github.workspace }}\Serein\WPF\bin\Debug\net6.0-windows\win-x64\publish
           if-no-files-found: ignore
 
   
