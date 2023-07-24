@@ -182,16 +182,16 @@
                 Margin="5"
                 Click="CardAction_Click"
                 Icon="PlugConnected24"
-                Tag="Plugins">
+                Tag="Download">
                 <StackPanel>
                     <TextBlock
                         FontSize="13"
                         FontWeight="Medium"
-                        Text="服务器插件" />
+                        Text="服务端下载" />
                     <TextBlock
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                        Text="查看服务器插件" />
+                        Text="下载服务端" />
                 </StackPanel>
             </ui:CardAction>
             <ui:CardAction

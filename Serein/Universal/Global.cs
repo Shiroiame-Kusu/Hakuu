@@ -20,7 +20,7 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.4.0-A2";
+        public const string VERSION = "v0.5.0-A1";
 
         /// <summary>
         /// 类型

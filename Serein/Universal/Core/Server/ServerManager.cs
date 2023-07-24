@@ -179,13 +179,10 @@ namespace Serein.Core.Server
                 }
                 string? JavaPathSettings = Global.Settings.Server.JavaPath;
                 if (string.IsNullOrEmpty(JavaPathSettings) == true){
-                    bool status = string.IsNullOrEmpty(JavaPathSettings);
                     CurrentJavaPath = "java";
                 }
                 else
                 {   
-                    
-                    string.IsNullOrEmpty(JavaPathSettings);
                     CurrentJavaPath = Global.Settings.Server.JavaPath;
                 }
                 try
@@ -252,6 +249,7 @@ namespace Serein.Core.Server
                         WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
                     };
                     StartInfo = ServerStartInfo;
+                    File.WriteAllText(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\eula.txt", "eula=true");
                 }
                 else
                 {
@@ -266,6 +264,7 @@ namespace Serein.Core.Server
                         StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
                         WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
                     };
+                    
                     StartInfo = ServerStartInfo;
                 }
                 

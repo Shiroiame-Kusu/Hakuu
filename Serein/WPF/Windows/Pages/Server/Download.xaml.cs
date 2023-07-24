@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Windows.Forms;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ using Downloader;
 using System.Reflection;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Threading;
+using System.Timers;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -42,45 +45,38 @@ namespace Serein.Windows.Pages.Server
         public static string DetailedAPIStatusCode { get; private set; }
         public static string DetailedAPIResult { get; private set; }
         public static string ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
+        private double b;
+
+        public string DownloadUnit { get; private set; }
         public static long TotalByteToReceive {get; set; }
         public static long ByteReceived {get; set; }
         public static string ReceivedPrecent {get; set; }
-        public static DownloadConfiguration downloadOpt = new DownloadConfiguration()
-        {
-            MaxTryAgainOnFailover = 5, // 失败的最大次数
-            ReserveStorageSpaceBeforeStartingDownload = true,
-            Timeout = 1000, // 每个 stream reader  的超时（毫秒），默认值是1000
-            RequestConfiguration = // 定制请求头文件
-                {
-                    Accept = "*/*",
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                    CookieContainer =  new CookieContainer(), // Add your cookies
-                    Headers = new WebHeaderCollection(), // Add your custom headers
-                    KeepAlive = true,
-                    ProtocolVersion = HttpVersion.Version11, // Default value is HTTP 1.1
-                    UseDefaultCredentials = false,
-                    UserAgent = $"DownloaderSample/{Assembly.GetExecutingAssembly().GetName().Version.ToString(3)}"
-                }
-        };
-
+        public static int a { get; set;}
         public Download()
         {
             InitializeComponent();
             LoadAPIInfo();
             
         }
-
+        public static void Timer_Tick(object sender, EventArgs e)
+        {
+            a++;
+        }
         private async void ServerDownload(object sender, RoutedEventArgs e)
         {
+            DownloadButton.IsEnabled = false;
             ServerDownloadLogTextBox.Clear();
             var ServerName = ServerDownloadName.SelectedItem.ToString();
                 var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
                 ServerDownloadLogTextBox.AppendText($"正在下载服务端\n名称: {ServerName}\n版本: {ServerVersion}\n");
-
+            ServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
+            if (File.Exists(ServerPath + "\\server.jar"))
+            {
+                File.Delete(ServerPath + "\\server.jar");
+            }
             ServerDownloadLogTextBox.AppendText($"下载目录为:{ServerPath}\n");
-            try
-                {
-                    await RequestDetailedAPI(API + ServerName + "/" + ServerVersion);
+            try{
+                     await RequestDetailedAPI(API + ServerName + "/" + ServerVersion);
                     if (DetailedAPIStatusCode != "OK")
                     {
                         Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
@@ -92,38 +88,42 @@ namespace Serein.Windows.Pages.Server
                 {
                     
                 }
-                JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
-                Directory.CreateDirectory(ServerPath + "\\");
-                Task.Run(() =>
-                {
-                    while (true)
-                    { 
-                        Thread.Sleep(1000);
-
-                    }
-                });
-                    var url = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"]["core_version"];
-                await DownloadFileAsync(url,ServerPath + "\\server.jar");
-                }
-            catch (Exception ex){
+                
+                }catch (Exception ex){
                 
 
                 }
+            JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
+            Directory.CreateDirectory(ServerPath + "\\");
+            
+            
+            var url = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"][0]["core_version"];
+            var DownloadStatus = DownloadFile(url, ServerPath + "\\server.jar");
+            if(DownloadStatus == true)
+            {
+                ServerDownloadLogTextBox.AppendText("下载完成\n");
+            }
+            else
+            {
+                ServerDownloadLogTextBox.AppendText("下载失败\n");
+            }
+            DownloadButton.IsEnabled = true;
+            Global.Settings.Server.Path = ServerPath + "\\server.jar";
 
-            
-            
         }
-        
-
         private async void LoadAPIInfo()
-        {
+        {   ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
             await RequestAPI(API); 
             try{
-                ServerDownloadLogTextBox.AppendText(APIStatusCode+"\n");
+                
                 if (APIStatusCode != "OK")
                 {
                     Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
 
+                }
+                else
+                {
+                    ServerDownloadLogTextBox.AppendText("获取API信息成功\n");
                 }
 
             }
@@ -183,56 +183,93 @@ namespace Serein.Windows.Pages.Server
             }
             
         }
-        public static async Task<bool> DownloadFileAsync(string url, string fileName, Action<double> progress = default, CancellationToken cancelationToken = default)
+        public bool DownloadFile(string URL, string filename)
         {
             try
-            {
-                // 使用HttpClient类创建一个HTTP客户端，指定不使用代理,并设置一个 CookieContainer
-                using (var httpClient = new HttpClient(new HttpClientHandler() { CookieContainer = new CookieContainer(), UseProxy = false }))
-                //using (var httpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() { Proxy = null, CookieContainer = new System.Net.CookieContainer() }))
+            {   
+                HttpWebRequest Myrq = (HttpWebRequest)HttpWebRequest.Create(URL);
+                HttpWebResponse myrp = (HttpWebResponse)Myrq.GetResponse();
+                long totalBytes = myrp.ContentLength;
+                if (DownloadProgress != null)
                 {
-                    // 发送GET请求，并等待响应
-                    var response = await httpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
-                    // 判断请求是否成功,如果失败则返回 false
-                    if (!response.IsSuccessStatusCode)
+                    DownloadProgress.Maximum = (int)totalBytes;
+                }
+                Stream st = myrp.GetResponseStream();
+                Stream so = new FileStream(filename, FileMode.Create);
+                long totalDownloadedByte = 0;
+                byte[] by = new byte[1024];
+                int osize = st.Read(by, 0, (int)by.Length);
+                DownloadProgressText.Text = "";
+                Task.Run(() =>
+                {
+                    a = 0;
+                    
+
+                    while (true)
                     {
-                        return (false);
-                    }
-                    // 获取响应内容长度
-                    long contentLength = response.Content.Headers.ContentLength ?? 0;
-                    // 创建一个文件流，并将响应内容写入文件流
-                    using (var fs = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
-                    {
-                        // 创建一个缓冲区，大小为64KB
-                        byte[] buffer = new byte[65536];
-                        // 获取响应流
-                        var httpStream = await response.Content.ReadAsStreamAsync();
-                        // 定义变量，用于记录每次读取的字节数
-                        int readLength = 0;
-                        // 循环异步读取响应流的内容，直到读取完毕
-                        while ((readLength = await httpStream.ReadAsync(buffer, 0, buffer.Length, cancelationToken)) > 0)
+                        
+                        Thread.Sleep(1000);
+                        a++;
+                        if (Math.Round((double)totalDownloadedByte / 1024 / a, 2) >= 1000)
                         {
-                            // 检查是否已经取消了任务
-                            if (cancelationToken.IsCancellationRequested)
-                            {
-                                // 如果任务已经取消，关闭文件流，并删除已经下载的文件
-                                fs.Close();
-                                File.Delete(fileName);
-                                return (false);
-                            }
-                            await fs.WriteAsync(buffer, 0, readLength, cancelationToken);
-                            progress?.Invoke(Math.Round((double)fs.Length / contentLength * 100, 2));
+                            b = 1024 * 1024;
+                            DownloadUnit = " MB/s  ";
+                        }
+                        else
+                        {
+                            b = 1024;
+                            DownloadUnit = " KB/s  ";
+                        }
+                        DownloadProgressText.Dispatcher.Invoke(() =>
+                        {
+                            DownloadProgressText.Text = Math.Round((double)totalDownloadedByte / b / a, 2) + DownloadUnit + Math.Round((double)totalDownloadedByte / totalBytes * 100, 2).ToString() + "%";
+                        }); 
+                        if(totalDownloadedByte == totalBytes)
+                        {
+                            break;
                         }
                     }
+                    Task.FromResult(0);
+                
+                }); 
+                
+                while (osize > 0)
+                {   
+                    
+                    totalDownloadedByte = osize + totalDownloadedByte;
+                    DoEvents();
+                    so.Write(by, 0, osize);
+                    if (DownloadProgress != null)
+                    {
+                        DownloadProgress.Value = (int)totalDownloadedByte;
+                    }
+                    
+                    osize = st.Read(by, 0, (int)by.Length);
                 }
-                // 返回true表示文件下载成功
-                return (true);
+                so.Close();
+                st.Close();
+                
+                return true;
             }
             catch (Exception)
             {
-                // 返回false表示文件下载失败
-                return (false);
+                return false;
+                throw;
+                
             }
         }
+        public static void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(ExitFrames), frame);
+            try { Dispatcher.PushFrame(frame); }
+            catch (InvalidOperationException) { }
+        }
+        private static object ExitFrames(object frame)
+        {
+            ((DispatcherFrame)frame).Continue = false;
+            return null;
+        }
+
     }
 }

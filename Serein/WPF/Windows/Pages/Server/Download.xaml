@@ -53,6 +53,8 @@ Header="服务端版本"
 Click="ServerDownload"
                 Name="DownloadButton"
     Content="开始下载"/>
+            <TextBlock VerticalAlignment="Bottom" Name="DownloadProgressText">下载进度： -</TextBlock>
+            <ProgressBar Name="DownloadProgress" Height="20px" Margin="5" VerticalAlignment="Bottom" Value="0"/>
         </StackPanel>
         <GroupBox 
         Margin="3"
@@ -60,70 +62,20 @@ Click="ServerDownload"
             Grid.Column="1">
             <DockPanel>
                 <TextBox 
-    Name="ServerDownloadLogTextBox"
-        VerticalAlignment="Stretch"
-    Margin="5"
-    DockPanel.Dock="Top"
-    IsReadOnly="True"
+                Name="ServerDownloadLogTextBox"
+                VerticalAlignment="Stretch"
+            Margin="5"
+            DockPanel.Dock="Top"
+            IsReadOnly="True"
     IsUndoEnabled="False"
-    
-    UndoLimit="0" 
+            UndoLimit="0" 
                 AcceptsReturn="True"
                     TextWrapping="Wrap"/>
+               
             </DockPanel>
-            
         </GroupBox>
-        <!--<StackPanel>
-            <Grid Margin="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <DockPanel Grid.Column="0" LastChildFill="False">
-
-                    <GroupBox
-                    Margin="3"
-                    Padding="3"
-                    DockPanel.Dock="Top"
-                    Header="服务端名"
-                        MinWidth="200">
-                        <ComboBox Name="ServerDownloadName">
-
-                        </ComboBox>
-                    </GroupBox>
-
-                    <GroupBox
-                    Margin="3"
-                    Padding="3"
-                    DockPanel.Dock="Top"
-                    Header="服务端版本"
-                        MinWidth="200">
-
-                        <ComboBox Name="ServerDownloadVersion">
-
-                        </ComboBox>
-
-                    </GroupBox>
-
-                    <ui:Button
-                        Margin="0,5"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Grid.ColumnSpan="4"
-                        MinWidth="180"
-                        DockPanel.Dock="Bottom"
-                    Click="ServerDownload"
-                        Content="开始下载"/>
-
-
-
-                </DockPanel>
-                <RichTextBox Grid.Column="1">
-
-                </RichTextBox>
-            </Grid>
-
-
-        </StackPanel>-->
+        
+        
+        
     </Grid>
 </ui:UiPage>

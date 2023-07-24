@@ -65,7 +65,7 @@ namespace Serein.Windows.Pages
                     if (Global.Settings.Serein.PagesDisplayed.ServerPanel)
                     {
                         Catalog.MainWindow?.Navigation.Navigate(1);
-                        Catalog.Function.Container?.Navigation?.Navigate(0);
+                        Catalog.Server.Container?.Navigation?.Navigate(0);
                     }
                     break;
                 case "Schedule":
@@ -75,25 +75,25 @@ namespace Serein.Windows.Pages
                         Catalog.Function.Container?.Navigation?.Navigate(0);
                     }
                     break;
-                case "Plugins":
+                case "Download":
                     if (Global.Settings.Serein.PagesDisplayed.ServerPanel)
                     {
                         Catalog.MainWindow?.Navigation.Navigate(1);
-                        Catalog.Function.Container?.Navigation?.Navigate(1);
+                        Catalog.Server.Container?.Navigation?.Navigate(2);
                     }
                     break;
                 case "ServerSettings":
                     if (Global.Settings.Serein.PagesDisplayed.Settings)
                     {
-                        Catalog.MainWindow?.Navigation.Navigate(4);
-                        Catalog.Function.Container?.Navigation?.Navigate(0);
+                        Catalog.MainWindow?.Navigation.Navigate(3);
+                        Catalog.Settings.Container?.Navigation?.Navigate(0);
                     }
                     break;
                 case "Settings":
                     if (Global.Settings.Serein.PagesDisplayed.Settings)
                     {
-                        Catalog.MainWindow?.Navigation.Navigate(4);
-                        Catalog.Function.Container?.Navigation?.Navigate(1);
+                        Catalog.MainWindow?.Navigation.Navigate(3);
+                        Catalog.Settings.Container?.Navigation?.Navigate(1);
                     }
                     break;
                 default:
