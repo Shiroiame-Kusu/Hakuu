@@ -54,7 +54,8 @@ Click="ServerDownload"
                 Name="DownloadButton"
     Content="开始下载"/>
             <TextBlock VerticalAlignment="Bottom" Name="DownloadProgressText">下载进度： -</TextBlock>
-            <ProgressBar Name="DownloadProgress" Height="20px" Margin="5" VerticalAlignment="Bottom" Value="0"/>
+            <ProgressBar Name="DownloadProgress" Height="20px" Margin="5" VerticalAlignment="Bottom"  Value="0"/>
+            <CheckBox Name="AutoSetupPath" Margin="5" VerticalAlignment="Bottom" Content="将下载的核心设为默认" IsChecked="True"/>
         </StackPanel>
         <GroupBox 
         Margin="3"

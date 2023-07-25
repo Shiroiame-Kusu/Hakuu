@@ -10,13 +10,16 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>10</LangVersion>
 		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<DebugType>portable</DebugType>
 		<DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
 	</PropertyGroup>
-
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<DebugType>embedded</DebugType>
 		<Optimize>True</Optimize>

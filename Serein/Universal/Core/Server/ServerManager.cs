@@ -12,6 +12,7 @@ using RegExp = System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Documents;
+using System.Windows.Controls;
 
 namespace Serein.Core.Server
 {
@@ -133,6 +134,7 @@ namespace Serein.Core.Server
         /// <returns>启动结果</returns>
         public static bool Start(bool quiet)
         {
+
             if (Status)
             {
                 if (!quiet)
@@ -168,10 +170,15 @@ namespace Serein.Core.Server
                 Logger.Output(LogType.Server_Notice, "启动中");
                 
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                if(string.IsNullOrEmpty(Global.Settings.Server.MaxRAM) == true)
+                if(string.IsNullOrEmpty(Global.Settings.Server.MaxRAM))
                 {
-                    Logger.MsgBox("最大内存为空", "Serein", 0, 48);
-                    return false;
+                    PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                    float AvailableRAM = ramCounter.NextValue();
+                    double AutoSetRAM = Math.Round(AvailableRAM * 0.8, 0);
+                    Global.Settings.Server.MaxRAM = AutoSetRAM.ToString();
+                    JEStartMaxRam = Global.Settings.Server.MaxRAM;
+                    Logger.MsgBox("已自动为您设置启动内存为 " + JEStartMaxRam + "M", "Serein", 0, 48);
+                    
                 }
                 else
                 {
@@ -218,7 +225,7 @@ namespace Serein.Core.Server
                 {
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
-                    if(AvailableRAM >= 12288)
+                    if (AvailableRAM >= 12288)
                     {
                         JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
                             "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +

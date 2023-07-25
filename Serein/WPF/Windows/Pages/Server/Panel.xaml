@@ -149,6 +149,32 @@
                         Content="结束进程" />
                 </Grid>
             </GroupBox>
+            <GroupBox 
+                Margin="3"
+                Padding="3"
+                Header="快捷操作">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:Button
+                        Margin="3"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Click="OpenFolder_Click"
+                        Content="根目录"
+                        Icon="Folder24" />
+                    <ui:Button 
+                    Grid.Column="1"
+                        Margin="3"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Content="TODO"
+                        IsEnabled="False"
+                        />
+                </Grid>
+            </GroupBox>
             <GroupBox
             Margin="3"
             Padding="3"
@@ -157,6 +183,8 @@
                     <ui:TextBox Name="MaxRAM"/>
                 </Grid>    
             </GroupBox>
+            
+            
         </StackPanel>
         <GroupBox
             Grid.RowSpan="2"

@@ -5,6 +5,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Documents;
 using Wpf.Ui.Controls;
+using System.Diagnostics;
+using System;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -15,7 +19,8 @@ namespace Serein.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
-            MaxRAM.Text = Global.Settings.Server.MaxRAM;
+            
+            
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();
             PanelRichTextBox.Document.Blocks.Clear();
@@ -94,16 +99,19 @@ namespace Serein.Windows.Pages.Server
         }
 
         public void Append(Paragraph paragraph)
-            => Dispatcher.Invoke(() =>
-            {
-                PanelRichTextBox.Document = PanelRichTextBox.Document ?? new();
-                PanelRichTextBox.Document.Blocks.Add(paragraph);
-                while (PanelRichTextBox.Document.Blocks.Count > 250)
-                {
-                    PanelRichTextBox.Document.Blocks.Remove(PanelRichTextBox.Document.Blocks.FirstBlock);
-                }
-                PanelRichTextBox.ScrollToEnd();
-            });
+        {
+            Dispatcher.Invoke(() =>
+                    {
+                        PanelRichTextBox.Document = PanelRichTextBox.Document ?? new();
+                        PanelRichTextBox.Document.Blocks.Add(paragraph);
+                        while (PanelRichTextBox.Document.Blocks.Count > 250)
+                        {
+                            PanelRichTextBox.Document.Blocks.Remove(PanelRichTextBox.Document.Blocks.FirstBlock);
+                        }
+                        PanelRichTextBox.ScrollToEnd();
+                    }, System.Windows.Threading.DispatcherPriority.Background); 
+            
+        }
 
         private void UpdateInfos()
             => Dispatcher.Invoke(() =>
@@ -127,5 +135,26 @@ namespace Serein.Windows.Pages.Server
                 JavaVersion.Content = ServerManager.JavaVersion;
                 
             });
+
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {   
+                if(string.IsNullOrEmpty(Global.Settings.Server.Path) != true)
+                {
+                    
+                    Process.Start("Explorer.exe", Path.GetDirectoryName(Global.Settings.Server.Path));
+                }
+                else
+                {
+                    Logger.MsgBox("打开文件夹失败，请检查启动路径是否为空", "Serein", 0, 48);
+                }
+                
+            }catch(Exception ex)
+            {
+                Logger.MsgBox("打开文件夹失败，请检查启动路径是否为空", "Serein", 0 , 48);
+            }
+            
+        }
     }
 }

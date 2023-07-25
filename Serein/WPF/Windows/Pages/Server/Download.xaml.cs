@@ -52,6 +52,8 @@ namespace Serein.Windows.Pages.Server
         public static long ByteReceived {get; set; }
         public static string ReceivedPrecent {get; set; }
         public static int a { get; set;}
+        public string CurrentServerPath { get; private set; }
+
         public Download()
         {
             InitializeComponent();
@@ -69,12 +71,12 @@ namespace Serein.Windows.Pages.Server
             var ServerName = ServerDownloadName.SelectedItem.ToString();
                 var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
                 ServerDownloadLogTextBox.AppendText($"正在下载服务端\n名称: {ServerName}\n版本: {ServerVersion}\n");
-            ServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
-            if (File.Exists(ServerPath + "\\server.jar"))
+            CurrentServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
+            if (File.Exists(CurrentServerPath + "\\server.jar"))
             {
-                File.Delete(ServerPath + "\\server.jar");
+                File.Delete(CurrentServerPath + "\\server.jar");
             }
-            ServerDownloadLogTextBox.AppendText($"下载目录为:{ServerPath}\n");
+            ServerDownloadLogTextBox.AppendText($"下载目录为:{CurrentServerPath}\n");
             try{
                      await RequestDetailedAPI(API + ServerName + "/" + ServerVersion);
                     if (DetailedAPIStatusCode != "OK")
@@ -86,7 +88,7 @@ namespace Serein.Windows.Pages.Server
                 }
                 else
                 {
-                    
+                    Logger.MsgBox("出现未知错误，请报告给开发者", "Serein", 0, 48);
                 }
                 
                 }catch (Exception ex){
@@ -94,11 +96,11 @@ namespace Serein.Windows.Pages.Server
 
                 }
             JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
-            Directory.CreateDirectory(ServerPath + "\\");
+            Directory.CreateDirectory(CurrentServerPath + "\\");
             
             
             var url = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"][0]["core_version"];
-            var DownloadStatus = DownloadFile(url, ServerPath + "\\server.jar");
+            var DownloadStatus = DownloadFile(url, CurrentServerPath + "\\server.jar");
             if(DownloadStatus == true)
             {
                 ServerDownloadLogTextBox.AppendText("下载完成\n");
@@ -108,7 +110,11 @@ namespace Serein.Windows.Pages.Server
                 ServerDownloadLogTextBox.AppendText("下载失败\n");
             }
             DownloadButton.IsEnabled = true;
-            Global.Settings.Server.Path = ServerPath + "\\server.jar";
+            if (AutoSetupPath.IsChecked == true)
+            {
+                Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
+            }
+            
 
         }
         private async void LoadAPIInfo()
@@ -118,7 +124,7 @@ namespace Serein.Windows.Pages.Server
                 
                 if (APIStatusCode != "OK")
                 {
-                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
+                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 1, 48);
 
                 }
                 else
