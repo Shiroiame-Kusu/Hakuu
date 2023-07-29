@@ -92,7 +92,7 @@ namespace Serein.Utils
                 EnableHyperlinks = true,
                 ExpandedInformation = "此软件与Mojang Studio、网易、Microsoft没有从属关系\n" +
                      "Serein is licensed under <a href=\"https://github.com/Zaitonn/Serein/blob/main/LICENSE\">GPL-v3.0</a>\n" +
-                     "Copyright © 2022-2023 <a href=\"https://github.com/Zaitonn\">Zaitonn</a> & <a href=\"https://github.com/Shiroiame-Kusu\">Shiroiame-Kusu</a. All Rights Reserved.",
+                     "Copyright © 2022-2023 <a href=\"https://github.com/Zaitonn\">Zaitonn</a> && <a href=\"https://github.com/Shiroiame-Kusu\">Shiroiame-Kusu</a>. All Rights Reserved.",
             };
             taskDialog.HyperlinkClicked += (_, e) => Process.Start(new ProcessStartInfo(e.Href) { UseShellExecute = true });
             taskDialog.ShowDialog();
@@ -101,8 +101,7 @@ namespace Serein.Utils
                 "欢迎使用Serein！！\n" +
                 "如果你是第一次使用Serein，那么一定要仔细阅读以下内容，相信这些会对你有所帮助OwO\n" +
                 "◦ 官网文档：https://serein.cc\n" +
-                "◦ GitHub仓库：https://github.com/Zaitonn/Serein\n" +
-                "◦ 交流群：\x1b[4m\x1b[36m954829203\x1b[0m\n" +
+                "◦ GitHub仓库：https://github.com/Shiroiame-Kusu/Serein\n" +
                 "◦ 使用此软件即视为你已阅读并同意了用户协议（https://serein.cc/docs/more/agreement）" +
                 "（控制台不支持超链接，你可以复制后到浏览器中打开）");
 #endif

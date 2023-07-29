@@ -86,11 +86,6 @@ namespace Serein.Windows.Pages.Server
                     }else if(DetailedAPIStatusCode == "NotFound") {
                     Logger.MsgBox("出现连接错误，请报告给开发者", "Serein", 0, 48);
                 }
-                else
-                {
-                    Logger.MsgBox("出现未知错误，请报告给开发者", "Serein", 0, 48);
-                }
-                
                 }catch (Exception ex){
                 
 
@@ -171,6 +166,7 @@ namespace Serein.Windows.Pages.Server
 
         private void ServerDownloadName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            DownloadButton.IsEnabled = false;
             var i = ServerDownloadName.SelectedIndex;
             JObject APIDataPrase = JObject.Parse(APIResult);
             DownloadableServerVersion = APIDataPrase["data"][i]["mc_versions"].Count();
@@ -214,7 +210,7 @@ namespace Serein.Windows.Pages.Server
                     while (true)
                     {
                         
-                        Thread.Sleep(1000);
+                        
                         a++;
                         if (Math.Round((double)totalDownloadedByte / 1024 / a, 2) >= 1000)
                         {
@@ -234,6 +230,7 @@ namespace Serein.Windows.Pages.Server
                         {
                             break;
                         }
+                        Thread.Sleep(1000);
                     }
                     Task.FromResult(0);
                 
