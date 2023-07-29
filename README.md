@@ -39,6 +39,11 @@ Win7或WinServer2012以上
 
 NET SDK >= 6.0
 
+```
+dotnet restore
+dotnet publish "Serein/WPF/Serein-WPF.csproj" -f net6.0-windows --no-self-contained -p:PublishSingleFile=true -p:RuntimeIdentifier=win-x64 -p:IncludeContentInSingleFile=true
+```
+
 ## 关于
 
 详见 [关于 - Serein](https://serein.cc/docs/more/about)
