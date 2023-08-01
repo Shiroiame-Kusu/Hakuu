@@ -7,8 +7,8 @@ using System.Windows.Documents;
 using Wpf.Ui.Controls;
 using System.Diagnostics;
 using System;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -19,7 +19,14 @@ namespace Serein.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
-            
+            Task.Run(() => { 
+                while (true) { 
+                    System.Threading.Thread.Sleep(1000); 
+                    Dispatcher.Invoke(() => {
+
+                    },System.Windows.Threading.DispatcherPriority.Normal); 
+                }
+            });
             
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();

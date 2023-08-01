@@ -10,6 +10,9 @@
     <Compile Update="Windows\Pages\Server\Download.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\Pages\Server\Properties.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Windows\Controls\ListViewEx.xaml">
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\Pages\Server\Download.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\Pages\Server\Properties.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

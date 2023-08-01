@@ -12,7 +12,7 @@
     AllowDrop="True"
     mc:Ignorable="d">
     <DockPanel>
-        <GroupBox Header="插件列表">
+        <GroupBox Header="插件列表  PS: 右键即可看到菜单">
             <ListView Name="PluginsListview" ContextMenuOpening="PluginsListview_ContextMenuOpening">
                 <ListView.ContextMenu>
                     <ContextMenu Name="PluginsContextMenu">
@@ -58,5 +58,6 @@
                 </ListView.ContextMenu>
             </ListView>
         </GroupBox>
+        
     </DockPanel>
 </ui:UiPage>

@@ -40,6 +40,12 @@
                     Icon="ArrowDownload24"
                     PageTag="download"
                     PageType="{x:Type pages:Download}" />
+                <ui:NavigationItem
+    x:Name="MinecraftProperties"
+    Content="服务端下载"
+    Icon="Settings24"
+    PageTag="properties"
+    PageType="{x:Type pages:Properties}" />
             </ui:NavigationCompact.Items>
         </ui:NavigationCompact>
         <Border
