@@ -11,7 +11,7 @@
     xmlns:settings_pages="clr-namespace:Serein.Windows.Pages.Settings"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Serein"
-    Width="800"
+    Width="900"
     Height="500"
     MaxWidth="{StaticResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}"
     MaxHeight="{StaticResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}"
