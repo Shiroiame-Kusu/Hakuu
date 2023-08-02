@@ -4,8 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-
-        d:DesignHeight="450"
+           xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+           d:DesignHeight="450"
         d:DesignWidth="800"
         AllowDrop="True"
         mc:Ignorable="d"
@@ -19,6 +19,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GroupBox Header="CPU占用" Grid.Row="0" Margin="10,8">
+                    <lvc:CartesianChart Series="{Binding LineSeriesCollection_CPU}">
+                        
+                    </lvc:CartesianChart>
 
                 </GroupBox>
                 <GroupBox Header="内存占用" Grid.Row="1" Margin="10,8">
