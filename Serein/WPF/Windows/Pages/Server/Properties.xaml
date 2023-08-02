@@ -14,7 +14,7 @@
 
     <Grid>
         <DockPanel>
-            <GroupBox Header="MC设置">
+            <GroupBox Header="MC设置" Name="PropertiesPage">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

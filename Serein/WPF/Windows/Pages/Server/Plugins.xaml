@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:Serein.Windows.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Home"
+    Title="Plugins"
     d:DesignHeight="450"
     d:DesignWidth="800"
     AllowDrop="True"

@@ -28,42 +28,66 @@ namespace Serein.Windows.Pages.Server
     {
 
         public PropertyOperation PropertiesOperation;
+        public static int i = 0;
         public Properties()
         {
             InitializeComponent();
             try
             {
-                PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
-                if(string.IsNullOrEmpty(PropertiesOperation["gamemode"].ToString()) != true)
-            {
-                LoadProperties();
-                Task.Run(() => {
-                                while(true)
-                                {
-                                    string OldPath = Global.Settings.Server.Path;
-                                    Thread.Sleep(1000);
-                                    if(OldPath != Global.Settings.Server.Path)
-                                    {
-                                        Dispatcher.Invoke(() =>
-                                        {
-                                            LoadProperties();
-                                        },System.Windows.Threading.DispatcherPriority.Background);
-                                        
-                                    }
-
-                                }
                 
-                            });
-            }
+                if(File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
+                {
+                    PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
+                    LoadProperties();
+                    ReloadinBackground();
+                }
+                else
+                {
+                    ReloadinBackground();
+                }
             }
             catch (Exception ex)
             {
-
+                
             }
             
             
         }
+        private void ReloadinBackground()
+        {
+            i++;
+            if(i <= 1)
+            {
+                Task.Run(() => {
+                    while (true)
+                    {
+                        string OldPath = Global.Settings.Server.Path;
+                        Thread.Sleep(1000);
+                        if (OldPath != Global.Settings.Server.Path)
+                        {
+                            if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
+                            {
+                                PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
+                                Dispatcher.Invoke(() =>
+                                {   
+                                    PropertiesPage.IsEnabled = true;
+                                    LoadProperties();
+                                }, System.Windows.Threading.DispatcherPriority.Background);
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(() =>
+                                {
+                                    PropertiesPage.IsEnabled = false;
+                                }, System.Windows.Threading.DispatcherPriority.Background);
+                            }
+                        }
 
+                    }
+
+                });
+            }
+        }
         private void LoadProperties()
         {   
             
