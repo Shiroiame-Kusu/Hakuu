@@ -2,6 +2,7 @@ using Serein.Base;
 using Serein.Settings;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Serein
 {
@@ -20,7 +21,13 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.7.0-A1";
+        public const string VERSION = "v0.7.0-A2";
+
+        /// <summary>
+        /// 分支
+        /// </summary>
+        public const string BRANCH = "Preview";
+        
 
         /// <summary>
         /// 类型
