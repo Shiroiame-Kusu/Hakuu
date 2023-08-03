@@ -32,6 +32,7 @@ namespace Serein.Windows.Pages.Server
         public Properties()
         {
             InitializeComponent();
+            PropertiesPage.IsEnabled = false;
             try
             {
                 
