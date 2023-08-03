@@ -46,12 +46,12 @@
                     Icon="Settings24"
                     PageTag="properties"
                     PageType="{x:Type pages:Properties}" />
-                <ui:NavigationItem
+                <!--<ui:NavigationItem
                     x:Name="Usage"
                     Content="服务端占用"
                     Icon="DataUsage24"
                     PageTag="usage"
-                    PageType="{x:Type pages:Usage}" />
+                    PageType="{x:Type pages:Usage}" />-->
             </ui:NavigationCompact.Items>
                 
         </ui:NavigationCompact>
