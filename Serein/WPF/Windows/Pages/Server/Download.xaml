@@ -48,7 +48,6 @@ Padding="3"
 DockPanel.Dock="Top"
 Header="服务端详细版本"
                 Name="CoreVersion"
-                Visibility="Collapsed"
     MinWidth="200">
 
                 <ComboBox Name="ServerDownloadCoreVersion" SelectedItem="0" SelectionChanged="ServerDownloadCoreVersion_SelectionChanged" IsEnabled="False">

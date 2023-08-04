@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
+using System.Collections.Generic;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -38,8 +39,9 @@ namespace Serein.Windows.Pages.Server
     public partial class Download : UiPage
     {
         public static string? API = "https://download.fastmirror.net/api/v3/";
-        public static string APIResult {  get; set; }
-        public static string APIStatusCode { get; set; }
+        public static string? VersionAPI;
+        public static string? VersionAPIStatus;
+        public JObject VersionAPIDataPrase;
         public static int DownloadableServerNumber {get; set; }
         public static int DownloadableServerVersion { get; set; }
         public static string DetailedAPIStatusCode { get; private set; }
@@ -48,9 +50,6 @@ namespace Serein.Windows.Pages.Server
         private double b;
 
         public string DownloadUnit { get; private set; }
-        public static long TotalByteToReceive {get; set; }
-        public static long ByteReceived {get; set; }
-        public static string ReceivedPrecent {get; set; }
         public static int a { get; set;}
         public string CurrentServerPath { get; private set; }
         public string DownloadFileURL { get; private set; }
@@ -64,13 +63,10 @@ namespace Serein.Windows.Pages.Server
             
 
         }
-        public static void Timer_Tick(object sender, EventArgs e)
-        {
-            a++;
-        }
         private async void ServerDownload(object sender, RoutedEventArgs e)
-        {
-            DownloadButton.IsEnabled = false;
+        {   
+
+            /*DownloadButton.IsEnabled = false;
             ServerDownloadLogTextBox.Clear();
             var ServerName = ServerDownloadName.SelectedItem.ToString();
                 var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
@@ -124,16 +120,18 @@ namespace Serein.Windows.Pages.Server
             if (AutoSetupPath.IsChecked == true)
             {
                 Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
-            }
+            }*/
             
 
         }
         private async void LoadAPIInfo()
-        {   ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
-            await RequestAPI(API); 
+        {   
+            ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
+            await RequestAPI(API,VersionAPIStatus,VersionAPI); 
+            
             try{
                 
-                if (APIStatusCode != "OK")
+                if (VersionAPIStatus != "OK")
                 {
                     Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 1, 48);
 
@@ -141,25 +139,27 @@ namespace Serein.Windows.Pages.Server
                 else
                 {
                     ServerDownloadLogTextBox.AppendText("获取API信息成功\n");
+                
                 }
-
+                VersionAPIDataPrase = JObject.Parse(VersionAPI);
+                DownloadableServerNumber = VersionAPIDataPrase["data"].Count();
+                for(int i = 0; i < DownloadableServerNumber; i++)
+                {
+                    ServerDownloadName.Items.Add(VersionAPIDataPrase["data"][i]["name"]);
+                }
             }
             catch(Exception ex){
                 
             }
 
-            JObject APIDataPrase = JObject.Parse(APIResult);
-            DownloadableServerNumber = APIDataPrase["data"].Count();
-            for(int i = 0; i < DownloadableServerNumber; i++)
-            {
-                ServerDownloadName.Items.Add(APIDataPrase["data"][i]["name"]);
-            }
+            
             
         }
-       
-        private static async Task RequestAPI(string url)
+
+        private static async Task<(string,string)> RequestAPI(string url, string ResponseStatus, string ResponseData)
         {
-            var HttpClient = new HttpClient();
+            using var HttpClient = new HttpClient();
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188");
             HttpClient.DefaultRequestHeaders.Add("Referer", "https://www.fastmirror.net/");
             HttpClient.DefaultRequestHeaders.Add("Host", "download.fastmirror.net");
             HttpClient.DefaultRequestHeaders.Add("Origin", "https://www.fastmirror.net");
@@ -168,13 +168,14 @@ namespace Serein.Windows.Pages.Server
             //Myrq.Headers.Add("Origin", "https://www.fastmirror.net");
             var Response = await HttpClient.GetAsync(url);
             var StatusCode = Response.StatusCode;
-            var Header = Response.Headers;
             var APIResponse =  Response.Content.ReadAsStringAsync();
-            APIStatusCode = StatusCode.ToString();
-            APIResult = APIResponse.Result.ToString();
-           
+
+
+            ResponseStatus = StatusCode.ToString();
+            ResponseData = APIResponse.Result.ToString();
+            return (ResponseStatus, ResponseData);
         }
-        private static async Task RequestDetailedAPI(string url)
+        /*private static async Task RequestDetailedAPI(string url)
         {
             var HttpClient = new HttpClient();
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188");
@@ -188,11 +189,11 @@ namespace Serein.Windows.Pages.Server
             DetailedAPIStatusCode = StatusCode.ToString();
             DetailedAPIResult = APIResponse.Result.ToString();
 
-        }
+        }*/
 
         private void ServerDownloadName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DownloadButton.IsEnabled = false;
+            /*DownloadButton.IsEnabled = false;
             var i = ServerDownloadName.SelectedIndex;
             JObject APIDataPrase = JObject.Parse(APIResult);
             DownloadableServerVersion = APIDataPrase["data"][i]["mc_versions"].Count();
@@ -205,12 +206,12 @@ namespace Serein.Windows.Pages.Server
 
             DownloadButton.IsEnabled = false;
             CoreVersion.Visibility = Visibility.Collapsed;
-            ServerDownloadVersion.IsEnabled = true;
+            ServerDownloadVersion.IsEnabled = true;*/
         }
 
         private async void ServerDownloadVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CoreVersion.Visibility = Visibility.Collapsed;
+            /*CoreVersion.Visibility = Visibility.Collapsed;
             ServerDownloadCoreVersion.IsEnabled = false;
             DownloadButton.IsEnabled = false;
             ServerDownloadCoreVersion.Items.Clear();
@@ -261,21 +262,11 @@ namespace Serein.Windows.Pages.Server
             {
                 DownloadButton.IsEnabled = false;
             }
-
+            */
         }
         private void ServerDownloadCoreVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                if (!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()) && !string.IsNullOrEmpty(ServerDownloadVersion.SelectedItem.ToString()) && !string.IsNullOrEmpty(ServerDownloadCoreVersion.SelectedItem.ToString()) && isDownloadFinished == true)
-                {
-                    DownloadButton.IsEnabled = true;
-                }
-            }
-            catch
-            {
-
-            }
+            
             
         }
         public bool DownloadFile(string URL, string filename)
