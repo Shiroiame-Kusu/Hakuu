@@ -46,6 +46,7 @@ Header="服务端版本"
 Margin="3"
 Padding="3"
 DockPanel.Dock="Top"
+                Visibility="Collapsed"
 Header="服务端详细版本"
                 Name="CoreVersion"
     MinWidth="200">
@@ -55,6 +56,20 @@ Header="服务端详细版本"
                 </ComboBox>
 
             </GroupBox>
+            <GroupBox
+                Margin="3"
+                Padding="3"
+                DockPanel.Dock="Top"
+                Header="其他操作">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:Button Grid.Column="0" Icon="PlayCircle24" Content="刷新" Margin="5" Name="Refresh" Click="Refresh_Click"/>
+                    <ui:Button Grid.Column="1" Icon="Document24" Content="详细版本" Margin="5" Name="FetchDetail" Click="FetchDetail_Click" />
+                </Grid>
+            </GroupBox>
             <ui:Button
     Margin="0,5"
     VerticalAlignment="Center"
@@ -62,6 +77,7 @@ Header="服务端详细版本"
     MinWidth="180"
     DockPanel.Dock="Bottom"
 Click="ServerDownload"
+                Icon="ArrowCircleDown24"
                 Name="DownloadButton"
     Content="开始下载"
                 IsEnabled="False"/>

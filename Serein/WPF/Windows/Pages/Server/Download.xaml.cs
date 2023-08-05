@@ -53,8 +53,11 @@ namespace Serein.Windows.Pages.Server
         public static int a { get; set;}
         public string CurrentServerPath { get; private set; }
         public string DownloadFileURL { get; private set; }
+        public static string ResponseStatus { get; private set; }
+        public static string ResponseData { get; private set; }
 
         public static bool isDownloadFinished = true;
+        
 
         public Download()
         {
@@ -127,13 +130,15 @@ namespace Serein.Windows.Pages.Server
         private async void LoadAPIInfo()
         {   
             ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
-            await RequestAPI(API,VersionAPIStatus,VersionAPI); 
-            
-            try{
+            await RequestAPI(API);
+            VersionAPI = ResponseData;
+            VersionAPIStatus = ResponseStatus;
+            try
+            {
                 
                 if (VersionAPIStatus != "OK")
                 {
-                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 1, 48);
+                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
 
                 }
                 else
@@ -141,6 +146,7 @@ namespace Serein.Windows.Pages.Server
                     ServerDownloadLogTextBox.AppendText("获取API信息成功\n");
                 
                 }
+                
                 VersionAPIDataPrase = JObject.Parse(VersionAPI);
                 DownloadableServerNumber = VersionAPIDataPrase["data"].Count();
                 for(int i = 0; i < DownloadableServerNumber; i++)
@@ -156,9 +162,9 @@ namespace Serein.Windows.Pages.Server
             
         }
 
-        private static async Task<(string,string)> RequestAPI(string url, string ResponseStatus, string ResponseData)
+        private static async Task RequestAPI(string url)
         {
-            using var HttpClient = new HttpClient();
+            var HttpClient = new HttpClient();
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188");
             HttpClient.DefaultRequestHeaders.Add("Referer", "https://www.fastmirror.net/");
             HttpClient.DefaultRequestHeaders.Add("Host", "download.fastmirror.net");
@@ -170,10 +176,9 @@ namespace Serein.Windows.Pages.Server
             var StatusCode = Response.StatusCode;
             var APIResponse =  Response.Content.ReadAsStringAsync();
 
-
-            ResponseStatus = StatusCode.ToString();
             ResponseData = APIResponse.Result.ToString();
-            return (ResponseStatus, ResponseData);
+            ResponseStatus = StatusCode.ToString();
+            
         }
         /*private static async Task RequestDetailedAPI(string url)
         {
@@ -193,6 +198,26 @@ namespace Serein.Windows.Pages.Server
 
         private void ServerDownloadName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ServerDownloadVersion.Items.Clear();
+            try
+            {
+                if (!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()))
+                {
+                    ServerDownloadVersion.IsEnabled = true;
+                }
+                DownloadButton.IsEnabled = false;
+            }
+            catch
+            {
+                DownloadButton.IsEnabled = false;
+            }
+
+            var i = ServerDownloadName.SelectedIndex;
+            DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
+            for (int i2 = 0; i2 < DownloadableServerVersion; i2++)
+            {
+                ServerDownloadVersion.Items.Add(VersionAPIDataPrase["data"][i]["mc_versions"][i2]);
+            }
             /*DownloadButton.IsEnabled = false;
             var i = ServerDownloadName.SelectedIndex;
             JObject APIDataPrase = JObject.Parse(APIResult);
@@ -366,6 +391,22 @@ namespace Serein.Windows.Pages.Server
             return null;
         }
 
-        
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadAPIInfo();
+        }
+
+        private async void FetchDetail_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                throw new NotImplementedException();
+            }catch(Exception) {
+                Logger.MsgBox("唔......看起来这个功能还没做好呢", "Serein", 0, 48);
+            }
+            
+            //TODO
+            //await RequestAPI(API);
+        }
     }
 }
