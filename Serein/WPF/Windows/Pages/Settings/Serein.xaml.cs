@@ -1,6 +1,8 @@
 using Serein.Utils;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
@@ -16,6 +18,7 @@ namespace Serein.Windows.Pages.Settings
             Load();
             _loaded = true;
             Catalog.Settings.Serein = this;
+            
         }
 
         private void Load()
@@ -28,6 +31,10 @@ namespace Serein.Windows.Pages.Settings
             MaxCacheLines.Value = Global.Settings.Serein.MaxCacheLines;
             Version.Text = "当前版本：" + Global.VERSION;
             BuildInfo.Text = Global.BuildInfo.ToString();
+            if (string.IsNullOrEmpty(Global.Settings.Serein.SereinDownloadPath))
+            {
+                SereinDownloadPath.Text = "./Serein-Server";
+            }
         }
 
         private void EnableGetUpdate_Click(object sender, RoutedEventArgs e)
@@ -65,5 +72,16 @@ namespace Serein.Windows.Pages.Settings
 
         private void WelPage_Click(object sender, RoutedEventArgs e)
             => Runtime.ShowWelcomePage();
+
+        private void SetSereinDownloadPath_Click(object sender, RoutedEventArgs e)
+        {   
+            FolderBrowserDialog dialog = new()
+            {
+                InitialDirectory = !string.IsNullOrEmpty(Global.Settings.Server.Path) && File.Exists(Global.Settings.Server.Path) ? Global.Settings.Server.Path : Global.PATH,
+               
+            };
+            SereinDownloadPath.Text = dialog.SelectedPath;
+            Global.Settings.Serein.SereinDownloadPath = dialog.SelectedPath;
+        }
     }
 }

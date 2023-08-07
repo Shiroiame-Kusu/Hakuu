@@ -62,15 +62,15 @@ namespace Serein.Windows.Pages.Server
                 Task.Run(() => {
                     while (true)
                     {
-                        string OldPath = Global.Settings.Server.Path;
+                        
                         Thread.Sleep(1000);
-                        if (OldPath != Global.Settings.Server.Path)
-                        {
+                        
                             if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
                                 PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
                                 Dispatcher.Invoke(() =>
                                 {   
+
                                     PropertiesPage.IsEnabled = true;
                                     LoadProperties();
                                 }, System.Windows.Threading.DispatcherPriority.Background);
@@ -82,9 +82,9 @@ namespace Serein.Windows.Pages.Server
                                     PropertiesPage.IsEnabled = false;
                                 }, System.Windows.Threading.DispatcherPriority.Background);
                             }
-                        }
-
                     }
+
+                    
 
                 });
             }

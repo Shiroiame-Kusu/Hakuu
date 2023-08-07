@@ -19,15 +19,27 @@ namespace Serein.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
-            Task.Run(() => { 
+            Task.Run(() => {
+                string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
                 while (true) { 
                     System.Threading.Thread.Sleep(1000); 
                     Dispatcher.Invoke(() => {
-
-                    },System.Windows.Threading.DispatcherPriority.Normal); 
+                        switch (ServerType)
+                        {
+                            case "jar":
+                                MEMSettings.Visibility = Visibility.Visible;
+                                break;
+                            default:
+                                MEMSettings.Visibility = Visibility.Collapsed;
+                                break;
+                        }
+                    },System.Windows.Threading.DispatcherPriority.Background); 
                 }
             });
+
             
+            
+            AutoJVMOptimization.IsChecked = Global.Settings.Server.AutoJVMOptimization;
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();
             PanelRichTextBox.Document.Blocks.Clear();
@@ -162,6 +174,11 @@ namespace Serein.Windows.Pages.Server
                 Logger.MsgBox("打开文件夹失败，请检查启动路径是否为空", "Serein", 0 , 48);
             }
             
+        }
+
+        private void AutoJVMOptimization_Click(object sender, RoutedEventArgs e)
+        {
+            Global.Settings.Server.AutoJVMOptimization = (bool)AutoJVMOptimization.IsChecked;
         }
     }
 }

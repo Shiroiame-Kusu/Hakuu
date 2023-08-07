@@ -17,6 +17,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            
+        
         <StackPanel>
             <GroupBox
                 Margin="3"
@@ -175,17 +178,23 @@
                         />
                 </Grid>
             </GroupBox>
-            <GroupBox
+            <GroupBox Name="MEMSettings"
             Margin="3"
             Padding="3"
             Header="最大内存 (MB)">
                 <Grid>
-                    <ui:TextBox Name="MaxRAM"/>
-                </Grid>    
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ui:TextBox Grid.Row="0" Name="MaxRAM" Margin="5,0"/>
+                        <ui:ToggleSwitch Grid.Row="1" Name="AutoJVMOptimization" Click="AutoJVMOptimization_Click" Content="启用自动优化" Margin="5"/>
+                    </Grid>    
             </GroupBox>
             
             
         </StackPanel>
+        </ScrollViewer>
         <GroupBox
             Grid.RowSpan="2"
             Grid.Column="1"

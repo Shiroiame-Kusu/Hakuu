@@ -69,6 +69,16 @@
                     />
             </StackPanel>
         </Grid>
+        <TextBlock Text="Serein下载路径" Margin="0,15,0,5"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                
+            </Grid.ColumnDefinitions>
+            <TextBox Name="SereinDownloadPath" IsReadOnly="True"/>
+            <ui:Button Name="SetSereinDownloadPath" Click="SetSereinDownloadPath_Click" />
+        </Grid>
         <Expander Margin="0,15" ExpandDirection="Down">
             <Expander.Header>
                 <TextBlock

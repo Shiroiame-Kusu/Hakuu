@@ -48,7 +48,7 @@ namespace Serein.Windows.Pages.Server
         public JObject DetailedAPIDataPrase;
         public static int DownloadableServerNumber {get; set; }
         public static int DownloadableServerVersion { get; set; }
-        public static string ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
+        public static string ServerPath;
         private double b;
 
         public string DownloadUnit { get; private set; }
@@ -70,6 +70,14 @@ namespace Serein.Windows.Pages.Server
         }
         private async void ServerDownload(object sender, RoutedEventArgs e)
         {
+            if (!string.IsNullOrEmpty(Global.Settings.Serein.SereinDownloadPath))
+            {
+                ServerPath = Global.Settings.Serein.SereinDownloadPath;
+            }
+            else
+            {
+                ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
+            }
             DownloadButton.IsEnabled = false;
             var ServerName = ServerDownloadName.SelectedItem.ToString();
             var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
@@ -95,6 +103,7 @@ namespace Serein.Windows.Pages.Server
             var DownloadStatus = DownloadFile(DownloadFileURL, CurrentServerPath + "\\server.jar");
             if (DownloadStatus == true)
             {
+                Logger.MsgBox("1\n2", "Serein", 0, 48);
                 ServerDownloadLogTextBox.AppendText("下载完成\n");
 
             }
@@ -193,7 +202,7 @@ namespace Serein.Windows.Pages.Server
                 else
                 {
                     ServerDownloadLogTextBox.AppendText("获取API信息成功\n");
-                
+
                 }
                 
                 VersionAPIDataPrase = JObject.Parse(VersionAPI);
@@ -373,6 +382,7 @@ namespace Serein.Windows.Pages.Server
             ServerDownloadName.Items.Clear();
             ServerDownloadVersion.Items.Clear();
             ServerDownloadCoreVersion.Items.Clear();
+            ServerDownloadLogTextBox.Clear();
             LoadAPIInfo();
         }
 
