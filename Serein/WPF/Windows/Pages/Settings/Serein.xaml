@@ -76,8 +76,8 @@
                 <ColumnDefinition Width="auto"/>
                 
             </Grid.ColumnDefinitions>
-            <TextBox Name="SereinDownloadPath" IsReadOnly="True"/>
-            <ui:Button Name="SetSereinDownloadPath" Click="SetSereinDownloadPath_Click" />
+            <TextBox Grid.Column="0" Name="SereinDownloadPath" IsReadOnly="True"/>
+            <ui:Button Grid.Column="1" Icon="OpenFolder24" Content="设置文件夹" Name="SetSereinDownloadPath" Click="SetSereinDownloadPath_Click" Margin="5,0,0,0"/>
         </Grid>
         <Expander Margin="0,15" ExpandDirection="Down">
             <Expander.Header>
