@@ -20,9 +20,17 @@ namespace Serein.Windows.Pages.Server
         {
             InitializeComponent();
             Task.Run(() => {
-                string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                string? ServerType = null;
+                try
+                {
+                    ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                }
+                catch
+                {
+
+                }
                 while (true) { 
-                    System.Threading.Thread.Sleep(1000); 
+                    
                     Dispatcher.Invoke(() => {
                         switch (ServerType)
                         {
@@ -33,7 +41,8 @@ namespace Serein.Windows.Pages.Server
                                 MEMSettings.Visibility = Visibility.Collapsed;
                                 break;
                         }
-                    },System.Windows.Threading.DispatcherPriority.Background); 
+                    },System.Windows.Threading.DispatcherPriority.Background);
+                    System.Threading.Thread.Sleep(500);
                 }
             });
 

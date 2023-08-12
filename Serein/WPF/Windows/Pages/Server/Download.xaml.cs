@@ -103,7 +103,6 @@ namespace Serein.Windows.Pages.Server
             var DownloadStatus = DownloadFile(DownloadFileURL, CurrentServerPath + "\\server.jar");
             if (DownloadStatus == true)
             {
-                Logger.MsgBox("1\n2", "Serein", 0, 48);
                 ServerDownloadLogTextBox.AppendText("下载完成\n");
 
             }
@@ -127,68 +126,20 @@ namespace Serein.Windows.Pages.Server
             {
 
             }
-            /*DownloadButton.IsEnabled = false;
-            ServerDownloadLogTextBox.Clear();
-            var ServerName = ServerDownloadName.SelectedItem.ToString();
-                var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
-                ServerDownloadLogTextBox.AppendText($"正在下载服务端\n名称: {ServerName}\n版本: {ServerVersion}\n");
-            CurrentServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
-            if (File.Exists(CurrentServerPath + "\\server.jar"))
-            {
-                File.Delete(CurrentServerPath + "\\server.jar");
-            }
-            ServerDownloadLogTextBox.AppendText($"下载目录为:{CurrentServerPath}\n");
-            
-            JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
-            Directory.CreateDirectory(CurrentServerPath + "\\");
-            try
-            {
-                if (!string.IsNullOrEmpty(ServerDownloadCoreVersion.SelectedItem.ToString()))
-                {
-                    DownloadFileURL = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + ServerDownloadCoreVersion.SelectedItem;
-                }
-                else
-                {
-                    DownloadFileURL = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"][0]["core_version"];
-                }
-            }catch(Exception ex)
-            {
-
-            }
-            
-
-            var DownloadStatus = DownloadFile(DownloadFileURL, CurrentServerPath + "\\server.jar");
-            if(DownloadStatus == true)
-            {
-                ServerDownloadLogTextBox.AppendText("下载完成\n");
-            }
-            else
-            {
-                ServerDownloadLogTextBox.AppendText("下载失败\n");
-            }
-            try
-            {
-                if(!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()) && !string.IsNullOrEmpty(ServerDownloadVersion.SelectedItem.ToString()))
-                    {
-                        DownloadButton.IsEnabled = true;
-                    }
-            }catch
-            {
-
-            }
-            
-            
-            if (AutoSetupPath.IsChecked == true)
-            {
-                Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
-            }*/
-
-
         }
         private async void LoadAPIInfo()
         {   
             ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
-            await RequestAPI(API);
+            
+            try
+            {
+                await RequestAPI(API);
+            }
+            catch
+            {
+                throw new HttpRequestException();
+            }
+            
             VersionAPI = ResponseData;
             VersionAPIStatus = ResponseStatus;
             try
@@ -256,12 +207,13 @@ namespace Serein.Windows.Pages.Server
             var i = ServerDownloadName.SelectedIndex;
             if (i >= 0)
             {
-                
+
                 DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
             }
             else
             {
                 i = 0;
+                DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
             }
             for (int i2 = 0; i2 < DownloadableServerVersion; i2++)
             {
@@ -319,58 +271,6 @@ namespace Serein.Windows.Pages.Server
             {
                 DownloadButton.IsEnabled = false;
             }
-            /*CoreVersion.Visibility = Visibility.Collapsed;
-            ServerDownloadCoreVersion.IsEnabled = false;
-            DownloadButton.IsEnabled = false;
-            ServerDownloadCoreVersion.Items.Clear();
-            
-            try
-            {   var ServerName = ServerDownloadName.SelectedItem.ToString();
-                var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
-                await RequestDetailedAPI(API + ServerName + "/" + ServerVersion + "?limit=10");
-                if (DetailedAPIStatusCode != "OK")
-                {
-                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
-
-                }
-                else if (DetailedAPIStatusCode == "NotFound")
-                {
-                    Logger.MsgBox("出现连接错误，请报告给开发者", "Serein", 0, 48);
-                }
-            }
-            catch (Exception ex)
-            {
-
-
-            }
-            
-            JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
-            try
-            {   
-
-                if(!string.IsNullOrEmpty(DetailedAPIPrase["data"]["builds"][0]["core_version"].ToString())) {
-                    CoreVersion.Visibility = Visibility.Visible;
-                    for (int i = 0;i < DetailedAPIPrase["data"]["builds"].Count(); i++)
-                    {   
-                        ServerDownloadCoreVersion.Items.Add(DetailedAPIPrase["data"]["builds"][i]["core_version"]);
-                    }
-                    ServerDownloadCoreVersion.IsEnabled = true;
-                    DownloadButton.IsEnabled = false;
-                }
-                else
-                {
-                    CoreVersion.Visibility = Visibility.Collapsed;
-                    if (!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()) && !string.IsNullOrEmpty(ServerDownloadVersion.SelectedItem.ToString()) && isDownloadFinished == true)
-                    {
-                        DownloadButton.IsEnabled = true;
-
-                    }
-                }
-            }catch(Exception ex)
-            {
-                DownloadButton.IsEnabled = false;
-            }
-            */
         }
         private void ServerDownloadCoreVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

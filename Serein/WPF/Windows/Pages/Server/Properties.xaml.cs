@@ -63,7 +63,7 @@ namespace Serein.Windows.Pages.Server
                     while (true)
                     {
                         
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         
                             if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
