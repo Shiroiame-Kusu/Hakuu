@@ -38,5 +38,7 @@ namespace Serein.Settings
         public string? MaxRAM;
 
         public string? JavaPath;
+
+        public bool AutoJVMOptimization = true;
     }
 }

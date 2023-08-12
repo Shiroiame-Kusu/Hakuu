@@ -36,7 +36,8 @@ namespace Serein.Base
             return "" +
                 $"编译类型：{Type}\r\n" +
                 $"编译时间：{Time}\r\n" +
-                $"详细信息：{Detail}";
+                $"详细信息：{Detail}\r\n" +
+                $"当前分支：{Global.BRANCH}";
         }
 
         /// <summary>

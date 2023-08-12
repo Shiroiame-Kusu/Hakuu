@@ -26,7 +26,7 @@
                 DockPanel.Dock="Top"
                 Header="服务端名"
                 MinWidth="200">
-                <ComboBox Name="ServerDownloadName" SelectedItem="" SelectionChanged="ServerDownloadName_SelectionChanged">
+                <ComboBox Name="ServerDownloadName" SelectedItem="" SelectionChanged="ServerDownloadName_SelectionChanged" >
 
                 </ComboBox>
             </GroupBox>
@@ -37,25 +37,53 @@ DockPanel.Dock="Top"
 Header="服务端版本"
     MinWidth="200">
 
-                <ComboBox Name="ServerDownloadVersion" SelectedItem="" SelectionChanged="ServerDownloadVersion_SelectionChanged">
+                <ComboBox Name="ServerDownloadVersion" SelectedItem="0" SelectionChanged="ServerDownloadVersion_SelectionChanged" IsEnabled="False">
 
                 </ComboBox>
 
             </GroupBox>
+            <GroupBox
+Margin="3"
+Padding="3"
+DockPanel.Dock="Top"
+                Visibility="Collapsed"
+Header="服务端详细版本"
+                Name="CoreVersion"
+    MinWidth="200">
 
+                <ComboBox Name="ServerDownloadCoreVersion" SelectedItem="0" SelectionChanged="ServerDownloadCoreVersion_SelectionChanged" IsEnabled="False">
+
+                </ComboBox>
+
+            </GroupBox>
+            <GroupBox
+                Margin="3"
+                Padding="3"
+                DockPanel.Dock="Top"
+                Header="其他操作">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:Button Grid.Column="0" Icon="PlayCircle24" Content="刷新" Margin="5" Name="Refresh" Click="Refresh_Click"/>
+                    <ui:Button Grid.Column="1" Icon="Document24" Content="详细版本" Margin="5" Name="FetchDetail" Click="FetchDetail_Click" />
+                </Grid>
+            </GroupBox>
             <ui:Button
     Margin="0,5"
     VerticalAlignment="Center"
     HorizontalAlignment="Center"
     MinWidth="180"
     DockPanel.Dock="Bottom"
-    IsEnabled="False"
 Click="ServerDownload"
+                Icon="ArrowCircleDown24"
                 Name="DownloadButton"
-    Content="开始下载"/>
+    Content="开始下载"
+                IsEnabled="False"/>
             <TextBlock VerticalAlignment="Bottom" Name="DownloadProgressText">下载进度： -</TextBlock>
             <ProgressBar Name="DownloadProgress" Height="20px" Margin="5" VerticalAlignment="Bottom"  Value="0"/>
-            <CheckBox Name="AutoSetupPath" Margin="5" VerticalAlignment="Bottom" Content="将下载的核心设为默认" IsChecked="True"/>
+            <ui:ToggleSwitch Name="AutoSetupPath" Margin="5" VerticalAlignment="Bottom" Content="将下载的核心设为默认" IsChecked="True"/>
         </StackPanel>
         <GroupBox 
         Margin="3"

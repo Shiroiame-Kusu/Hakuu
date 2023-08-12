@@ -171,13 +171,13 @@ namespace Serein.Core.Server
                 
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
                 if(string.IsNullOrEmpty(Global.Settings.Server.MaxRAM))
-                {
+                { 
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
                     double AutoSetRAM = Math.Round(AvailableRAM * 0.8, 0);
                     Global.Settings.Server.MaxRAM = AutoSetRAM.ToString();
                     JEStartMaxRam = Global.Settings.Server.MaxRAM;
-                    Logger.MsgBox("已自动为您设置启动内存为 " + JEStartMaxRam + "M", "Serein", 0, 48);
+                    Logger.MsgBox("未设置最大内存\n已自动为您设置启动内存为 " + JEStartMaxRam + "M", "Serein", 0, 48);
                     
                 }
                 else
@@ -225,24 +225,32 @@ namespace Serein.Core.Server
                 {
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
-                    if (AvailableRAM >= 12288)
+                    if (Global.Settings.Server.AutoJVMOptimization)
                     {
-                        JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
-                            "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
-                            "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
-                            "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
-                            "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
-                            "-Daikars.new.flags=true -XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M -XX:G1ReservePercent=15 ";
+                        if (AvailableRAM >= 12288)
+                        {
+                            JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
+                                "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
+                                "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
+                                "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
+                                "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
+                                "-Daikars.new.flags=true -XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M -XX:G1ReservePercent=15 ";
+                        }
+                        else
+                        {
+                            JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
+                                "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
+                                "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
+                                "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
+                                "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
+                                "-Daikars.new.flags=true -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 ";
+                        }
                     }
                     else
                     {
-                        JEOptimizationArguments = Use_incubator_vector + " -XX:+UseG1GC " +
-                            "-XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions " +
-                            "-XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 " +
-                            "-XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 " +
-                            "-XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs " +
-                            "-Daikars.new.flags=true -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 ";
+                        JEOptimizationArguments = Use_incubator_vector;
                     }
+                    
                     ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
                     {
 

@@ -28,6 +28,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
+using System.Collections.Generic;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -38,158 +39,277 @@ namespace Serein.Windows.Pages.Server
     public partial class Download : UiPage
     {
         public static string? API = "https://download.fastmirror.net/api/v3/";
-        public static string APIResult {  get; set; }
-        public static string APIStatusCode { get; set; }
+        public static string? DownloadAPI = "https://download.fastmirror.net/download/";
+        public static string? VersionAPI;
+        public static string? VersionAPIStatus;
+        public JObject VersionAPIDataPrase;
+        public static string? DetailedAPI;
+        public static string? DetailedAPIStatus;
+        public JObject DetailedAPIDataPrase;
         public static int DownloadableServerNumber {get; set; }
         public static int DownloadableServerVersion { get; set; }
-        public static string DetailedAPIStatusCode { get; private set; }
-        public static string DetailedAPIResult { get; private set; }
-        public static string ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
+        public static string ServerPath;
         private double b;
 
         public string DownloadUnit { get; private set; }
-        public static long TotalByteToReceive {get; set; }
-        public static long ByteReceived {get; set; }
-        public static string ReceivedPrecent {get; set; }
         public static int a { get; set;}
         public string CurrentServerPath { get; private set; }
+        public string DownloadFileURL { get; private set; }
+        public static string ResponseStatus { get; private set; }
+        public static string ResponseData { get; private set; }
+
+        public static bool isDownloadFinished = true;
+        
 
         public Download()
         {
             InitializeComponent();
             LoadAPIInfo();
             
-        }
-        public static void Timer_Tick(object sender, EventArgs e)
-        {
-            a++;
+
         }
         private async void ServerDownload(object sender, RoutedEventArgs e)
         {
+            if (!string.IsNullOrEmpty(Global.Settings.Serein.SereinDownloadPath))
+            {
+                ServerPath = Global.Settings.Serein.SereinDownloadPath;
+            }
+            else
+            {
+                ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
+            }
             DownloadButton.IsEnabled = false;
-            ServerDownloadLogTextBox.Clear();
             var ServerName = ServerDownloadName.SelectedItem.ToString();
-                var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
-                ServerDownloadLogTextBox.AppendText($"正在下载服务端\n名称: {ServerName}\n版本: {ServerVersion}\n");
+            var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
             CurrentServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
+
+            Directory.CreateDirectory(CurrentServerPath + "\\");
             if (File.Exists(CurrentServerPath + "\\server.jar"))
             {
                 File.Delete(CurrentServerPath + "\\server.jar");
             }
             ServerDownloadLogTextBox.AppendText($"下载目录为:{CurrentServerPath}\n");
-            try{
-                     await RequestDetailedAPI(API + ServerName + "/" + ServerVersion);
-                    if (DetailedAPIStatusCode != "OK")
-                    {
-                        Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
-
-                    }else if(DetailedAPIStatusCode == "NotFound") {
-                    Logger.MsgBox("出现连接错误，请报告给开发者", "Serein", 0, 48);
+            try
+            {
+                if (!string.IsNullOrEmpty(ServerDownloadCoreVersion.SelectedItem.ToString()))
+                {
+                    DownloadFileURL = DownloadAPI + ServerName + "/" + ServerVersion + "/" + ServerDownloadCoreVersion.SelectedItem;
                 }
-                }catch (Exception ex){
-                
-
-                }
-            JObject DetailedAPIPrase = JObject.Parse(DetailedAPIResult);
-            Directory.CreateDirectory(CurrentServerPath + "\\");
-            
-            
-            var url = "https://download.fastmirror.net/download/" + ServerName + "/" + ServerVersion + "/" + DetailedAPIPrase["data"]["builds"][0]["core_version"];
-            var DownloadStatus = DownloadFile(url, CurrentServerPath + "\\server.jar");
-            if(DownloadStatus == true)
+            }
+            catch (Exception ex)
+            {
+                DownloadFileURL = DownloadAPI + ServerName + "/" + ServerVersion + "/" + DetailedAPIDataPrase["data"]["builds"][0]["core_version"];
+            }
+            var DownloadStatus = DownloadFile(DownloadFileURL, CurrentServerPath + "\\server.jar");
+            if (DownloadStatus == true)
             {
                 ServerDownloadLogTextBox.AppendText("下载完成\n");
+
             }
             else
             {
                 ServerDownloadLogTextBox.AppendText("下载失败\n");
+                Logger.MsgBox("下载失败", "Serein", 0, 48);
             }
-            DownloadButton.IsEnabled = true;
+
             if (AutoSetupPath.IsChecked == true)
             {
                 Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
             }
-            
+            try
+            {
+                if (isDownloadFinished)
+                {
+                    DownloadButton.IsEnabled = true;
+                }
+            }catch(Exception ex)
+            {
 
+            }
         }
         private async void LoadAPIInfo()
-        {   ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
-            await RequestAPI(API); 
-            try{
+        {   
+            ServerDownloadLogTextBox.AppendText("正在获取API信息......\n");
+            
+            try
+            {
+                await RequestAPI(API);
+            }
+            catch
+            {
+                throw new HttpRequestException();
+            }
+            
+            VersionAPI = ResponseData;
+            VersionAPIStatus = ResponseStatus;
+            try
+            {
                 
-                if (APIStatusCode != "OK")
+                if (VersionAPIStatus != "OK")
                 {
-                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 1, 48);
+                    Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
 
                 }
                 else
                 {
                     ServerDownloadLogTextBox.AppendText("获取API信息成功\n");
-                }
 
+                }
+                
+                VersionAPIDataPrase = JObject.Parse(VersionAPI);
+                DownloadableServerNumber = VersionAPIDataPrase["data"].Count();
+                for(int i = 0; i < DownloadableServerNumber; i++)
+                {
+                    ServerDownloadName.Items.Add(VersionAPIDataPrase["data"][i]["name"]);
+                }
             }
             catch(Exception ex){
                 
             }
 
-            JObject APIDataPrase = JObject.Parse(APIResult);
-            DownloadableServerNumber = APIDataPrase["data"].Count();
-            for(int i = 0; i < DownloadableServerNumber; i++)
-            {
-                ServerDownloadName.Items.Add(APIDataPrase["data"][i]["name"]);
-            }
+            
             
         }
-       
+
         private static async Task RequestAPI(string url)
         {
             var HttpClient = new HttpClient();
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188");
+            HttpClient.DefaultRequestHeaders.Add("Referer", "https://www.fastmirror.net/");
+            HttpClient.DefaultRequestHeaders.Add("Host", "download.fastmirror.net");
+            HttpClient.DefaultRequestHeaders.Add("Origin", "https://www.fastmirror.net");
+            //Myrq.Referer = "https://www.fastmirror.net/";
+            //Myrq.Host = "download.fastmirror.net";
+            //Myrq.Headers.Add("Origin", "https://www.fastmirror.net");
             var Response = await HttpClient.GetAsync(url);
             var StatusCode = Response.StatusCode;
-            var Header = Response.Headers;
-            var APIResponse =  Response.Content.ReadAsStringAsync();
-            APIStatusCode = StatusCode.ToString();
-            APIResult = APIResponse.Result.ToString();
-           
-        }
-        private static async Task RequestDetailedAPI(string url)
-        {
-            var HttpClient = new HttpClient();
-            var Response = await HttpClient.GetAsync(url);
-            var StatusCode = Response.StatusCode;
-            var Header = Response.Headers;
             var APIResponse = Response.Content.ReadAsStringAsync();
-            DetailedAPIStatusCode = StatusCode.ToString();
-            DetailedAPIResult = APIResponse.Result.ToString();
 
+            ResponseData = APIResponse.Result.ToString();
+            ResponseStatus = StatusCode.ToString();
         }
 
         private void ServerDownloadName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DownloadButton.IsEnabled = false;
+            ServerDownloadVersion.Items.Clear();
+            try
+            {
+                if (!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()))
+                {
+                    ServerDownloadVersion.IsEnabled = true;
+                }
+                DownloadButton.IsEnabled = false;
+            }
+            catch
+            {
+                DownloadButton.IsEnabled = false;
+            }
+            var i = ServerDownloadName.SelectedIndex;
+            if (i >= 0)
+            {
+
+                DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
+            }
+            else
+            {
+                i = 0;
+                DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
+            }
+            for (int i2 = 0; i2 < DownloadableServerVersion; i2++)
+            {
+                ServerDownloadVersion.Items.Add(VersionAPIDataPrase["data"][i]["mc_versions"][i2]);
+            }
+            /*DownloadButton.IsEnabled = false;
             var i = ServerDownloadName.SelectedIndex;
             JObject APIDataPrase = JObject.Parse(APIResult);
             DownloadableServerVersion = APIDataPrase["data"][i]["mc_versions"].Count();
             ServerDownloadVersion.Items.Clear();
+            ServerDownloadCoreVersion.Items.Clear();
             for (int i2 = 0;i2 < DownloadableServerVersion; i2++)
             {
                 ServerDownloadVersion.Items.Add(APIDataPrase["data"][i]["mc_versions"][i2]);
             }
+
+            DownloadButton.IsEnabled = false;
+            CoreVersion.Visibility = Visibility.Collapsed;
+            ServerDownloadVersion.IsEnabled = true;*/
         }
 
-        private void ServerDownloadVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ServerDownloadVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(ServerDownloadName.SelectedItem.ToString()))
+            try
             {
-                DownloadButton.IsEnabled = true;
+                if(!string.IsNullOrEmpty(ServerDownloadVersion.SelectedItem.ToString()))
+                {
+                    var ServerName = ServerDownloadName.SelectedItem.ToString();
+                    var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
+                    await RequestAPI(API + ServerName + "/" + ServerVersion + "?limit=10");
+                    DetailedAPI = ResponseData;
+                    DetailedAPIStatus = ResponseStatus;
+                    if (DetailedAPIStatus != "OK")
+                    {
+                        Logger.MsgBox("无法连接至服务器，请检查您的网络连接", "Serein", 0, 48);
+
+                    }
+                    else if (DetailedAPIStatus == "NotFound")
+                    {
+                        Logger.MsgBox("出现连接错误，请报告给开发者", "Serein", 0, 48);
+                    }
+                    try
+                    {
+                        if(!string.IsNullOrEmpty(DetailedAPI)){
+                            DetailedAPIDataPrase = JObject.Parse(DetailedAPI);
+                            DownloadButton.IsEnabled = true;
+                        }
+                    }catch(Exception ex)
+                    {
+
+                    }
+                }
             }
+            catch
+            {
+                DownloadButton.IsEnabled = false;
+            }
+        }
+        private void ServerDownloadCoreVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             
+            
+        }
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            ServerDownloadName.Items.Clear();
+            ServerDownloadVersion.Items.Clear();
+            ServerDownloadCoreVersion.Items.Clear();
+            ServerDownloadLogTextBox.Clear();
+            LoadAPIInfo();
+        }
+
+        private async void FetchDetail_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception)
+            {
+                Logger.MsgBox("唔......看起来这个功能还没做好呢", "Serein", 0, 48);
+            }
+
+            //TODO
+            //await RequestAPI(API);
         }
         public bool DownloadFile(string URL, string filename)
         {
             try
-            {   
+            {
+                isDownloadFinished = false;
                 HttpWebRequest Myrq = (HttpWebRequest)HttpWebRequest.Create(URL);
+                Myrq.Referer = "https://www.fastmirror.net/";
+                Myrq.Host = "download.fastmirror.net";
+                Myrq.Headers.Add("Origin", "https://www.fastmirror.net");
+
                 HttpWebResponse myrp = (HttpWebResponse)Myrq.GetResponse();
                 long totalBytes = myrp.ContentLength;
                 if (DownloadProgress != null)
@@ -232,9 +352,10 @@ namespace Serein.Windows.Pages.Server
                         }
                         Thread.Sleep(1000);
                     }
+                    
                     Task.FromResult(0);
                 
-                }); 
+                });
                 
                 while (osize > 0)
                 {   
@@ -251,11 +372,13 @@ namespace Serein.Windows.Pages.Server
                 }
                 so.Close();
                 st.Close();
-                
+                isDownloadFinished = true;
                 return true;
+
             }
             catch (Exception)
             {
+                isDownloadFinished = true;
                 return false;
                 throw;
                 
@@ -274,5 +397,6 @@ namespace Serein.Windows.Pages.Server
             return null;
         }
 
+        
     }
 }

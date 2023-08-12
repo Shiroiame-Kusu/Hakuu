@@ -41,6 +41,8 @@ namespace Serein.Settings
         /// </summary>
         public bool UseDarkTheme;
 
+        public string? SereinDownloadPath;
+
         public AutoRun AutoRun = new();
        
         public DevelopmentTool DevelopmentTool = new();

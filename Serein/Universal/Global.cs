@@ -2,6 +2,9 @@ using Serein.Base;
 using Serein.Settings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Windows;
 
 namespace Serein
 {
@@ -20,7 +23,14 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.7.0-A1";
+        // const string VERSION = "v0.9.1-RC1";
+        public static readonly string VERSION = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion.ToString();
+
+        /// <summary>
+        /// 分支
+        /// </summary>
+        public const string BRANCH = "ReleaseCandidate";
+        
 
         /// <summary>
         /// 类型
