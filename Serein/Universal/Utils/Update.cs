@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -39,6 +40,7 @@ namespace Serein.Utils
         /// 上一个获取到的版本
         /// </summary>
         public static string? LastVersion { get; private set; }
+        public static string? CurrentVersion;
 
         /// <summary>
         /// 检查更新
@@ -61,7 +63,8 @@ namespace Serein.Utils
                 if (LastVersion != version && !string.IsNullOrEmpty(version))
                 {
                     LastVersion = version;
-                    if (version != Global.VERSION)
+                    CurrentVersion = "v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                    if (version != CurrentVersion)
                     {
                         Logger.Output(Base.LogType.Version_New, version);
                         if (Global.Settings.Serein.AutoUpdate)
