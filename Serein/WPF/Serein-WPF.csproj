@@ -10,7 +10,6 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>10</LangVersion>
 		<Nullable>enable</Nullable>
-    	<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
