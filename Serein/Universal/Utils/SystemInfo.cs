@@ -19,11 +19,18 @@ namespace Serein.Utils
 #if !UNIX
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                _counter = new("Processor", "% Processor Time", "_Total")
+                try
                 {
-                    MachineName = "."
-                };
-                Task.Run(() => _counter?.NextValue());
+                    _counter = new("Processor", "% Processor Time", "_Total")
+                    {
+                        MachineName = "."
+                    };
+                    Task.Run(() => _counter?.NextValue());
+                }
+                catch {
+                
+                }
+
             }
 #endif
             Info = OperatingSystemInfo.GetOperatingSystemInfo();

@@ -7,6 +7,9 @@
     <Compile Update="Windows\Pages\Debug.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\Pages\Function\Frp\Login.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\Pages\Server\Download.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\Pages\Function\Container.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\Pages\Function\Frp\Login.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\Pages\Server\Download.xaml">

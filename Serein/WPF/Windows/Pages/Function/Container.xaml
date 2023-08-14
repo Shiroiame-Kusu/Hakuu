@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:Serein.Windows.Pages.Function"
+    xmlns:pages2="clr-namespace:Serein.Windows.Pages.Function.Frp"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     d:DesignHeight="850"
     d:DesignWidth="800"
@@ -29,6 +30,12 @@
                     Icon="Timer24"
                     PageTag="schedule"
                     PageType="{x:Type pages:Schedule}" />
+                <ui:NavigationItem
+                    x:Name="LocyanFrp"
+                    Content="定时任务"
+                    Icon="VirtualNetwork20"
+                    PageTag="frp"
+                    PageType="{x:Type pages2:Login}" />
             </ui:NavigationCompact.Items>
         </ui:NavigationCompact>
         <Border
