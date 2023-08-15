@@ -23,13 +23,13 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.9.1-RC1";
+        public const string VERSION = "v0.10.0-A1";
         //public static readonly string VERSION = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion.ToString();
 
         /// <summary>
         /// 分支
         /// </summary>
-        public const string BRANCH = "ReleaseCandidate";
+        public const string BRANCH = "Preview";
         
 
         /// <summary>

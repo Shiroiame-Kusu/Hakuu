@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,7 +28,7 @@ namespace Serein.Windows.Pages.Function.Frp
             InitializeComponent();
 
         }
-
+        
         private void Register_Navigate(object sender, RequestNavigateEventArgs e)
         {
             var url = e.Uri.ToString();
