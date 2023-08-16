@@ -50,6 +50,8 @@ namespace Serein.Utils
             if (!Global.Settings.Serein.EnableGetUpdate)
             {
                 return;
+            }else if(Global.BRANCH.Equals("Preview")){
+                return;
             }
             try
             {
