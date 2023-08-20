@@ -99,6 +99,7 @@ namespace Serein.Core.Server
         public static int? JavaVersionNumber { get; set; }
         public static bool AbleToUse_incubator_vector { get; set;}
         public static string? Use_incubator_vector {get; set;}
+        public static bool? StartResult;
 
         /// <summary>
         /// 编码列表

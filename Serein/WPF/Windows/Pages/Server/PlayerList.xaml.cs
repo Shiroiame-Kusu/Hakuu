@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json.Linq;
 using Serein.Base.Motd;
+using Serein.Core.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,8 @@ namespace Serein.Windows.Pages.Server
             Task.Run(() =>
             {
                 while (true)
-                {
+                {   
+                    //if(ServerManager.Start())
                     JObject? PlayerListItems = Motd.PlayerListData;
                         Console.WriteLine(PlayerListItems.ToString());
                         int x = -1;
