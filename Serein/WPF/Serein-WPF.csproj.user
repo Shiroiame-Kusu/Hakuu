@@ -13,6 +13,9 @@
     <Compile Update="Windows\Pages\Server\Download.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Windows\Pages\Server\PlayerList.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\Pages\Server\Properties.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -31,6 +34,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\Pages\Server\Download.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\Pages\Server\PlayerList.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\Pages\Server\Properties.xaml">

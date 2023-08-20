@@ -42,10 +42,16 @@
                     PageType="{x:Type pages:Download}" />
                 <ui:NavigationItem
                     x:Name="MinecraftProperties"
-                    Content="服务端下载"
+                    Content="设置"
                     Icon="Settings24"
                     PageTag="properties"
                     PageType="{x:Type pages:Properties}" />
+                <ui:NavigationItem
+                    x:Name="Usage"
+                    Content="玩家列表"
+                    Icon="People24"
+                    PageTag="playerlist"
+                    PageType="{x:Type pages:PlayerList}" />
                 <!--<ui:NavigationItem
                     x:Name="Usage"
                     Content="服务端占用"

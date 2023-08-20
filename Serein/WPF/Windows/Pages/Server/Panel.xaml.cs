@@ -20,7 +20,9 @@ namespace Serein.Windows.Pages.Server
         {
             InitializeComponent();
             Task.Run(() => {
-                string? ServerType = null;
+                while (true)
+                {
+                    string? ServerType = null;
                 try
                 {
                     ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
@@ -29,7 +31,7 @@ namespace Serein.Windows.Pages.Server
                 {
 
                 }
-                while (true) { 
+                
                     
                     Dispatcher.Invoke(() => {
                         switch (ServerType)
@@ -132,7 +134,7 @@ namespace Serein.Windows.Pages.Server
                     {
                         PanelRichTextBox.Document = PanelRichTextBox.Document ?? new();
                         PanelRichTextBox.Document.Blocks.Add(paragraph);
-                        while (PanelRichTextBox.Document.Blocks.Count > 250)
+                        while (PanelRichTextBox.Document.Blocks.Count > Global.Settings.Serein.MaxCacheLines)
                         {
                             PanelRichTextBox.Document.Blocks.Remove(PanelRichTextBox.Document.Blocks.FirstBlock);
                         }
