@@ -34,29 +34,34 @@ namespace Serein.Windows.Pages.Server
             Task.Run(() =>
             {
                 while (true)
-                {   
-                    //if(ServerManager.Start())
-                    JObject? PlayerListItems = Motd.PlayerListData;
-                        Console.WriteLine(PlayerListItems.ToString());
-                        int x = -1;
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        //if(ServerManager.Start())
                         try
                         {
-                            x = PlayerListItems["sample"].Count();
+                            JObject? PlayerListItems = Motd.PlayerListData;
+                            Console.WriteLine(PlayerListItems.ToString());
+                            int x = -1;
+                        
+                            x = PlayerListItems["sample"].Count() - 1;
+                        
+                        List<Player> items = new List<Player>();
+
+                        for (int i = 0;i <= x;i++)
+                        {
+                        //ListColumnUsername. PlayerListItems["sample"][i];
+                        var item = PlayerListItems["sample"][i]["name"];
+                            Console.WriteLine(item);
+                            items.Add(new Player() { Username = PlayerListItems["sample"][i]["name"].ToString(), UUID = PlayerListItems["sample"][i]["id"].ToString()});
+                        }
+                    
+                        PlayerListView.ItemsSource = items;
                         }
                         catch
                         {
 
                         }
-                        List<Player> items = new List<Player>();
-
-                        for (int i = 0;i <= x;i++)
-                        {
-                            //ListColumnUsername. PlayerListItems["sample"][i];
-                            items.Add(new Player() { UserName = PlayerListItems["sample"][i]["name"].ToString(), UUID = PlayerListItems["sample"][i]["id"].ToString()});
-                        }
-                    Dispatcher.Invoke(() =>
-                    {
-                        PlayerListView.ItemsSource = items;
                     },System.Windows.Threading.DispatcherPriority.Background);
                         
                         Thread.Sleep(500);
@@ -71,7 +76,7 @@ namespace Serein.Windows.Pages.Server
     }
     public class Player
     {
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string UUID { get; set; }
     }
 }

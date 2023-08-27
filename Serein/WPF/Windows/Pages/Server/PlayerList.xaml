@@ -20,8 +20,8 @@ AllowDrop="True"
                 <ListView Name="PlayerListView" HorizontalAlignment="Stretch" Width="auto" Margin="10" ContextMenuOpening="ListView_ContextMenuOpening">
                     <ListView.View>
                         <GridView >
-                            <GridViewColumn Header="用户名" DisplayMemberBinding="{Binding Username}" Width="auto"/>
-                            <GridViewColumn Header="UUID" DisplayMemberBinding="{Binding UUID}" Width="auto"/>
+                            <GridViewColumn Header="用户名" DisplayMemberBinding="{Binding Username}" Width="300"/>
+                            <GridViewColumn Header="UUID" DisplayMemberBinding="{Binding UUID}" Width="300"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

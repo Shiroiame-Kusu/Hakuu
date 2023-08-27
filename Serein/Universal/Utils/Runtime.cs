@@ -19,7 +19,7 @@ namespace Serein.Utils
         /// <summary>
         /// 命令行参数
         /// </summary>
-        private static IList<string> _args => Environment.GetCommandLineArgs();
+        private readonly static IList<string> _args = Environment.GetCommandLineArgs();
 
         /// <summary>
         /// 初始化

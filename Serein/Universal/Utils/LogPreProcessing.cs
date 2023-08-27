@@ -292,7 +292,8 @@ namespace Serein.Utils
                     "debug" => Brushes.DarkOrchid,
                     "true" => Brushes.YellowGreen,
                     "false" => Brushes.Tomato,
-                    _ => RegExp.Regex.IsMatch(words, @"^\d+$") ? Brushes.Teal : run.Foreground,
+                    //_ => RegExp.Regex.IsMatch(words, @"^\d+$") ? Brushes.Teal : run.Foreground,
+                    _ => Global.Settings.Serein.UseDarkTheme ? Brushes.White : Brushes.Black ,
                 };
                 paragraph.Inlines.Add(run);
             }
