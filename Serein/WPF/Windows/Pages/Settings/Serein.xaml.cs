@@ -36,6 +36,10 @@ namespace Serein.Windows.Pages.Settings
             {
                 SereinDownloadPath.Text = "\\\\Serein-Server";
             }
+            else
+            {
+                SereinDownloadPath.Text = Global.Settings.Serein.SereinDownloadPath;
+            }
         }
 
         private void EnableGetUpdate_Click(object sender, RoutedEventArgs e)

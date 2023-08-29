@@ -23,7 +23,7 @@ namespace Serein
         /// <summary>
         /// 版本号
         /// </summary>
-        public const string VERSION = "v0.10.0-A2";
+        public const string VERSION = "v0.10.0-A3";
         //public static readonly string VERSION = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion.ToString();
 
         /// <summary>
