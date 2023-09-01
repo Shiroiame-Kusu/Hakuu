@@ -31,19 +31,16 @@ namespace Serein.Windows.Pages.Server
                 {
 
                 }
-                
-                    
-                    Dispatcher.Invoke(() => {
                         switch (ServerType)
                         {
                             case "jar":
-                                MEMSettings.Visibility = Visibility.Visible;
+                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                                
                                 break;
                             default:
-                                MEMSettings.Visibility = Visibility.Collapsed;
+                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
                                 break;
                         }
-                    },System.Windows.Threading.DispatcherPriority.Background);
                     System.Threading.Thread.Sleep(500);
                 }
             });

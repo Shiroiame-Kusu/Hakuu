@@ -522,6 +522,7 @@ namespace Serein.Core.Server
             if (!string.IsNullOrEmpty(e.Data))
             {
                 string lineFiltered = LogPreProcessing.Filter(e.Data);
+                Console.WriteLine(lineFiltered);
                 if (string.IsNullOrEmpty(LevelName) && RegExp.Regex.IsMatch(lineFiltered, Global.Settings.Matches.LevelName, RegExp.RegexOptions.IgnoreCase))
                 {
                     LevelName = RegExp.Regex.Match(lineFiltered, Global.Settings.Matches.LevelName, RegExp.RegexOptions.IgnoreCase).Groups[1].Value.Trim();

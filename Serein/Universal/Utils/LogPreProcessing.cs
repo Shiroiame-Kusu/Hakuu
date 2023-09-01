@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using RegExp = System.Text.RegularExpressions;
+using System;
 #if WPF
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -63,6 +64,7 @@ namespace Serein.Utils
         {
             string result = RegExp.Regex.Replace(input, @"\x1b\[.*?m", string.Empty);
             result = RegExp.Regex.Replace(result, @"\x1b", string.Empty);
+            //Console.WriteLine(result);
             StringBuilder stringBuilder = new();
             for (int i = 0; i < result.Length; i++)
             {

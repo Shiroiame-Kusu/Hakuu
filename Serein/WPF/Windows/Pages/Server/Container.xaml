@@ -47,7 +47,7 @@
                     PageTag="properties"
                     PageType="{x:Type pages:Properties}" />
                 <ui:NavigationItem
-                    x:Name="Usage"
+                    x:Name="PlayerList"
                     Content="玩家列表"
                     Icon="People24"
                     PageTag="playerlist"

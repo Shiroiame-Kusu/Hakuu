@@ -14,16 +14,55 @@ AllowDrop="True"
     <Grid>
         
             
-        <GroupBox>
+        <GroupBox Header="服务器中的玩家">
             <Grid>
 
-                <ListView Name="PlayerListView" HorizontalAlignment="Stretch" Width="auto" Margin="10" ContextMenuOpening="ListView_ContextMenuOpening">
-                    <ListView.View>
-                        <GridView >
-                            <GridViewColumn Header="用户名" DisplayMemberBinding="{Binding Username}" Width="300"/>
-                            <GridViewColumn Header="UUID" DisplayMemberBinding="{Binding UUID}" Width="300"/>
-                        </GridView>
-                    </ListView.View>
+                <ListView Name="PlayerListView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" Margin="10" ContextMenuOpening="ListView_ContextMenuOpening" MouseDown="PlayerListView_MouseDown">
+                    <ListView.ContextMenu>
+                        <ContextMenu Name="PlayerListMenu">
+                            <ui:MenuItem 
+                                SymbolIcon="ArrowClockwise24" Header="刷新" Name="Refresh" Click="Refresh_Click"/>
+                            <Separator/>
+                            <ui:MenuItem
+                                Name="GamemodeSurvival"
+                                Click="GamemodeSurvival_Click"
+                                Header="生存模式"/>
+                            <ui:MenuItem
+                                Name="GamemodeCreative"
+                                Click="GamemodeCreative_Click"
+                                Header="创造模式"/>
+                            <ui:MenuItem
+                                Name="GamemodeAdventure"
+                                Click="GamemodeAdventure_Click"
+                                Header="冒险模式"/>
+                            <ui:MenuItem
+                                Name="GamemodeSpectator"
+                                Click="GamemodeSpectator_Click"
+                                Header="旁观模式"/>
+                            <Separator/>
+                            <ui:MenuItem
+                                Name="SetOperator"
+                                Click="SetOperator_Click"
+                                Header="设置OP"/>
+                            <ui:MenuItem
+                                Name="DeleteOperator"
+                                Click="DeleteOperator_Click"
+                                Header="取消OP"/>
+                            <Separator/>
+                            <ui:MenuItem
+                                Name="KickPlayer"
+                                Click="KickPlayer_Click"
+                                Header="踢出玩家"/>
+                            <ui:MenuItem
+                                Name="BanPlayer"
+                                Click="BanPlayer_Click"
+                                Header="封禁玩家"/>
+                            <ui:MenuItem
+                                Name="BanPlayerIP"
+                                Click="BanPlayerIP_Click"
+                                Header="封禁玩家IP"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                 </ListView>
             </Grid>
         </GroupBox>
