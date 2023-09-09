@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using Wpf.Ui.Controls;
 
 namespace Serein.Windows.Pages.Server
@@ -28,6 +29,32 @@ namespace Serein.Windows.Pages.Server
                 Navigation.Frame = null;
             }
             Catalog.Server.Container = this;
+            Task.Run(() => {
+                while (true)
+                {
+                    string? ServerType = null;
+                    try
+                    {
+                        ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                    }
+                    catch
+                    {
+
+                    }
+                    switch (ServerType)
+                    {
+                        case "jar":
+                            Dispatcher.Invoke(() => { MinecraftProperties.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.Invoke(() => { PlayerList.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                            break;
+                        default:
+                            Dispatcher.Invoke(() => { MinecraftProperties.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.Invoke(() => { PlayerList.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                            break;
+                    }
+                    System.Threading.Thread.Sleep(500);
+                }
+            });
         }
     }
 }

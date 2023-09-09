@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    d:DesignHeight="850"
+    d:DesignHeight="450"
     d:DesignWidth="800"
     AllowDrop="True"
     mc:Ignorable="d">
@@ -222,7 +222,8 @@
                     DockPanel.Dock="Top"
                     IsReadOnly="True"
                     IsUndoEnabled="False"
-                    UndoLimit="0" />
+                    UndoLimit="0"
+                    TextChanged="PanelRichTextBox_TextChanged"/>
             </DockPanel>
         </GroupBox>
     </Grid>

@@ -9,18 +9,22 @@ using System.Diagnostics;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using Esprima.Ast;
 
 namespace Serein.Windows.Pages.Server
 {
     public partial class Panel : UiPage
     {
         private readonly Timer _updateInfoTimer = new Timer(2000) { AutoReset = true };
-
+        public static string ServerLog {get; set;}
         public Panel()
         {
             InitializeComponent();
             Task.Run(() => {
-                string? ServerType = null;
+                while (true)
+                {
+                    string? ServerType = null;
                 try
                 {
                     ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
@@ -29,19 +33,16 @@ namespace Serein.Windows.Pages.Server
                 {
 
                 }
-                while (true) { 
-                    
-                    Dispatcher.Invoke(() => {
                         switch (ServerType)
                         {
                             case "jar":
-                                MEMSettings.Visibility = Visibility.Visible;
+                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                                
                                 break;
                             default:
-                                MEMSettings.Visibility = Visibility.Collapsed;
+                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
                                 break;
                         }
-                    },System.Windows.Threading.DispatcherPriority.Background);
                     System.Threading.Thread.Sleep(500);
                 }
             });
@@ -132,7 +133,7 @@ namespace Serein.Windows.Pages.Server
                     {
                         PanelRichTextBox.Document = PanelRichTextBox.Document ?? new();
                         PanelRichTextBox.Document.Blocks.Add(paragraph);
-                        while (PanelRichTextBox.Document.Blocks.Count > 250)
+                        while (PanelRichTextBox.Document.Blocks.Count > Global.Settings.Serein.MaxCacheLines)
                         {
                             PanelRichTextBox.Document.Blocks.Remove(PanelRichTextBox.Document.Blocks.FirstBlock);
                         }
@@ -188,6 +189,21 @@ namespace Serein.Windows.Pages.Server
         private void AutoJVMOptimization_Click(object sender, RoutedEventArgs e)
         {
             Global.Settings.Server.AutoJVMOptimization = (bool)AutoJVMOptimization.IsChecked;
+        }
+
+        private void PanelRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+                TextRange textRange = new TextRange(
+                    // TextPointer to the start of content in the RichTextBox.
+                    PanelRichTextBox.Document.ContentStart,
+                    // TextPointer to the end of content in the RichTextBox.
+                    PanelRichTextBox.Document.ContentEnd
+                );
+
+                // The Text property on a TextRange object returns a string
+                // representing the plain text content of the TextRange.
+                ServerLog = textRange.Text;
         }
     }
 }

@@ -1,22 +1,22 @@
 # Serein For JE - 新时代极简服务器面板
 
 <p align="center">
-    <img alt="Serein" src="https://socialify.git.ci/Zaitonn/Serein/image?description=1&font=KoHo&logo=https%3A%2F%2Fserein.cc%2Fimg%2FSerein.png&name=1&owner=1&pattern=Circuit%20Board">
+    <img alt="Serein" src="https://socialify.git.ci/Zaitonn/Serein/image?description=1&descriptionEditable=%E6%9E%81%E7%AE%80%E4%BD%86%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%A2%E6%9D%BF%E8%BD%AF%E4%BB%B6&font=KoHo&logo=https%3A%2F%2Fserein.cc%2Fimg%2FSerein.png&name=1&owner=1&pattern=Circuit%20Board#light">
     <br>
-    <img alt="GitHub Stars" src="https://img.shields.io/github/stars/Zaitonn/Serein?color=blue">
+    <img alt="GitHub Stars" src="https://img.shields.io/github/stars/Shiroiame-Kusu/Serein?color=blue">
     <a href="https://github.com/Shiroiame-Kusu/Serein/releases/latest">
-        <img src="https://img.shields.io/github/v/release/Zaitonn/Serein?color=blue">
+        <img src="https://img.shields.io/github/v/release/Shiroiame-Kusu/Serein?color=blue">
     </a>
     <a href="https://github.com/Shiroiame-Kusu/Serein/releases/latest">
-        <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/Zaitonn/Serein/total?color=blue">
+        <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/Shiroiame-Kusu/Serein/total?color=blue">
     </a>
     <a href="https://github.com/Shiroiame-Kusu/Serein/actions/workflows/Build.yml">
-    <img alt="GitHub bulid" src="https://img.shields.io/github/actions/workflow/status/Zaitonn/Serein/Build.yml?branch=main&color=blue">
+    <img alt="GitHub bulid" src="https://img.shields.io/github/actions/workflow/status/Shiroiame-Kusu/Serein/Build.yml?branch=main&color=blue">
     </a>
     <a href="https://github.com/Shiroiame-Kusu/Serein">
-        <img alt="GitHub repo file count" src="https://img.shields.io/github/languages/code-size/Zaitonn/Serein">
+        <img alt="GitHub repo file count" src="https://img.shields.io/github/languages/code-size/Shiroiame-Kusu/Serein">
     </a>
-    <a href="https://app.codacy.com/gh/Zaitonn/Serein/">
+    <a href="https://app.codacy.com/gh/Shiroiame-Kusu/Serein/">
         <img alt="Codacy Grade" src="https://img.shields.io/codacy/grade/982069cd172d4ef4a40aa4bce4977542?color=blue&logo=Codacy">
     </a>
 </p>

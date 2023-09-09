@@ -25,7 +25,7 @@ namespace Serein.Settings
         
         public int OutputEncoding;
         
-        public int OutputStyle = 1;
+        public int OutputStyle = 2;
         
         public string Path = string.Empty;
         

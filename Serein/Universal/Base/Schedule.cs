@@ -79,7 +79,7 @@ namespace Serein.Base
             CrontabSchedule crontabSchedule;
             if (Core.Generic.Command.GetType(Command) != CommandType.Invalid && (crontabSchedule = CrontabSchedule.TryParse(Cron)) != null)
             {
-                NextTime = crontabSchedule.GetNextOccurrences(DateTime.Now, DateTime.Now.AddYears(1)).ToList()[0];
+                NextTime = crontabSchedule!.GetNextOccurrences(DateTime.Now, DateTime.Now.AddYears(1)).ToList()[0];
                 return true;
             }
             else

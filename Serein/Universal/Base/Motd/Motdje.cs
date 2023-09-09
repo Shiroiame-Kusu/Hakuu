@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Serein.Extensions;
 using Serein.Utils;
 using System;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Serein.Base.Motd
     internal class Motdje : Motd
     {
         public static readonly byte[] SentPacket = new byte[] { 6, 0, 0, 0, 0x63, 0xdd, 1, 1, 0 };
-
+        
         /// <summary>
         /// Java版Motd获取入口
         /// </summary>
@@ -112,7 +114,8 @@ namespace Serein.Base.Motd
                 Logger.Output(LogType.Debug, $"Origin: {Origin}");
 
                 MotdjePacket.Packet packet = JsonConvert.DeserializeObject<MotdjePacket.Packet>(Origin) ?? throw new ArgumentNullException();
-
+                JObject PacketData = JObject.Parse(Origin);
+                PlayerListData = PacketData["players"].ToObject<JObject>();
                 IsSuccessful = true;
                 OnlinePlayer = packet.Players.Online;
                 MaxPlayer = packet.Players.Max;

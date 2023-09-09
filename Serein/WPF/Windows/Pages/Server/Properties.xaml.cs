@@ -63,7 +63,7 @@ namespace Serein.Windows.Pages.Server
                     while (true)
                     {
                         
-                        Thread.Sleep(500);
+                        
                         
                             if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
@@ -82,6 +82,7 @@ namespace Serein.Windows.Pages.Server
                                     PropertiesPage.IsEnabled = false;
                                 }, System.Windows.Threading.DispatcherPriority.Background);
                             }
+                        Thread.Sleep(500);
                     }
 
                     

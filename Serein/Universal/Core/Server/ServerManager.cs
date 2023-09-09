@@ -99,6 +99,7 @@ namespace Serein.Core.Server
         public static int? JavaVersionNumber { get; set; }
         public static bool AbleToUse_incubator_vector { get; set;}
         public static string? Use_incubator_vector {get; set;}
+        public static bool? StartResult;
 
         /// <summary>
         /// 编码列表
@@ -521,6 +522,7 @@ namespace Serein.Core.Server
             if (!string.IsNullOrEmpty(e.Data))
             {
                 string lineFiltered = LogPreProcessing.Filter(e.Data);
+                Console.WriteLine(lineFiltered);
                 if (string.IsNullOrEmpty(LevelName) && RegExp.Regex.IsMatch(lineFiltered, Global.Settings.Matches.LevelName, RegExp.RegexOptions.IgnoreCase))
                 {
                     LevelName = RegExp.Regex.Match(lineFiltered, Global.Settings.Matches.LevelName, RegExp.RegexOptions.IgnoreCase).Groups[1].Value.Trim();

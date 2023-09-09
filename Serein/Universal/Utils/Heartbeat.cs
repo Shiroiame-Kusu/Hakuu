@@ -37,7 +37,7 @@ namespace Serein.Utils
         /// </summary>
         private static void Request()
         {
-            if (Global.Settings.Serein.Function.NoHeartbeat)
+                if (Global.Settings.Serein.Function.NoHeartbeat)
             {
                 return;
             }

@@ -10,6 +10,7 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>10</LangVersion>
 		<Nullable>enable</Nullable>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
@@ -50,6 +51,7 @@
 		<Compile Remove="..\Universal\Core\JSPlugin\Permissions\PermissionManager.cs" />
 		<Compile Remove="..\Universal\Core\JSPlugin\Plugin.cs" />
 		<Compile Remove="..\Universal\Core\JSPlugin\PreLoadConfig.cs" />
+		<Compile Remove="..\Universal\Core\Server\PlayerManager.cs" />
 		<Compile Remove="..\Universal\Settings\Bot.cs" />
 		<Content Include="..\Universal\Sources\Serein.ico" />
 		<Resource Include="..\Universal\Sources\Serein.ico" />
