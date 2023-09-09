@@ -48,6 +48,7 @@ namespace Serein.Windows.Pages.Server
             
 
         }
+        
         private void refresh()
         {
             string? PlayerListItems = null;
@@ -69,7 +70,23 @@ namespace Serein.Windows.Pages.Server
                     {
                         string? Username = PlayerListData["sample"][a]["name"].ToString();
                         string? UUID = PlayerListData["sample"][a]["id"].ToString();
+
+                        string UsernameFilter = Username + @"\[\/(.*?)\]";
+                        string IPFilter = @"\[\/(.*?)\]";
                         string? IP = null;
+                        try
+                        {
+                            MatchCollection match = Regex.Matches(Panel.ServerLog, UsernameFilter);
+                            Console.WriteLine(match.Count());
+                            string? str = Regex.Match(match[match.Count() - 1].Value, IPFilter).ToString();
+                            str = str.Remove(0, 2);
+                            IP = str.Substring(0, str.Length - 1);
+                        }
+                        catch
+                        {
+
+                        }
+                        
                         items.Add(new Player() { Username = Username, UUID = UUID, IP = IP });
                     }
                 }

@@ -222,7 +222,8 @@
                     DockPanel.Dock="Top"
                     IsReadOnly="True"
                     IsUndoEnabled="False"
-                    UndoLimit="0" />
+                    UndoLimit="0"
+                    TextChanged="PanelRichTextBox_TextChanged"/>
             </DockPanel>
         </GroupBox>
     </Grid>
