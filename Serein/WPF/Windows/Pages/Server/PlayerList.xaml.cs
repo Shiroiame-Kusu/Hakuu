@@ -40,39 +40,8 @@ namespace Serein.Windows.Pages.Server
             {
                 
                 while (true)
-                {   
-                    string? PlayerListItems = null;
-                    PlayerListData = Motd.PlayerListData;
-                    try
-                    {
-                        PlayerListItems = PlayerListData["sample"].ToString();
-                    }
-                    catch
-                    {
-
-                    }
-                    items = new List<Player>();
-                    if (ServerManager.Status)
-                    {
-                        if (!string.IsNullOrEmpty(PlayerListItems))
-                        {
-                            for (int a = 0; a < PlayerListData["sample"].Count(); a++)
-                            {
-                                string? Username = PlayerListData["sample"][a]["name"].ToString();
-                                string? UUID = PlayerListData["sample"][a]["id"].ToString();
-                                items.Add(new Player() { Username = Username, UUID = UUID });
-                            }
-                        }
-                    }
-                    else
-                    {
-
-                    }
-                    
-                    Dispatcher.Invoke(() =>
-                    {
-                        PlayerListView.ItemsSource = items;
-                    });
+                {
+                    refresh();
                     Thread.Sleep(500);
                 }
             });
@@ -83,7 +52,6 @@ namespace Serein.Windows.Pages.Server
         {
             string? PlayerListItems = null;
             PlayerListData = Motd.PlayerListData;
-            Console.WriteLine(PlayerListData);
             try
             {
                 PlayerListItems = PlayerListData["sample"].ToString();
@@ -93,19 +61,28 @@ namespace Serein.Windows.Pages.Server
 
             }
             items = new List<Player>();
-            if (!string.IsNullOrEmpty(PlayerListItems))
+            if (ServerManager.Status)
+            {
+                if (!string.IsNullOrEmpty(PlayerListItems))
+                {
+                    for (int a = 0; a < PlayerListData["sample"].Count(); a++)
+                    {
+                        string? Username = PlayerListData["sample"][a]["name"].ToString();
+                        string? UUID = PlayerListData["sample"][a]["id"].ToString();
+                        string? IP = null;
+                        items.Add(new Player() { Username = Username, UUID = UUID, IP = IP });
+                    }
+                }
+            }
+            else
             {
 
-                for (int a = 0; a < PlayerListData["sample"].Count(); a++)
-                {
-                    string? Username = PlayerListData["sample"][a]["name"].ToString();
-                    string? UUID = PlayerListData["sample"][a]["id"].ToString();
-                    items.Add(new Player() { Username = Username, UUID = UUID });
-                }
-                
-
             }
-            PlayerListView.ItemsSource = items;
+
+            Dispatcher.Invoke(() =>
+            {
+                PlayerListView.ItemsSource = items;
+            });
         }
         private void ListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -283,11 +260,12 @@ namespace Serein.Windows.Pages.Server
     }
     public class Player
     {
-        public string Username { get; set; }
-        public string UUID { get; set; }
+        public string? Username { get; set; }
+        public string? UUID { get; set; }
+        public string? IP { get; set; }
         public override string ToString()
         {
-            return this.Username + " (" + this.UUID + ")";
+            return this.Username + " (" + this.UUID + ") IP:" + this.IP;
         }
     }
 }
