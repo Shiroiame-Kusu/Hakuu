@@ -115,7 +115,7 @@ namespace Serein.Base.Motd
 
                 MotdjePacket.Packet packet = JsonConvert.DeserializeObject<MotdjePacket.Packet>(Origin) ?? throw new ArgumentNullException();
                 JObject PacketData = JObject.Parse(Origin);
-                PlayerListData = PacketData["players"].ToObject<JObject>();
+                PlayerListData = PacketData["players"]?.ToObject<JObject>();
                 IsSuccessful = true;
                 OnlinePlayer = packet.Players.Online;
                 MaxPlayer = packet.Players.Max;

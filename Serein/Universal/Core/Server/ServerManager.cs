@@ -202,9 +202,9 @@ namespace Serein.Core.Server
                     defaultJava.UseShellExecute = false;
                     defaultJava.CreateNoWindow = true;
 
-                    Process pr = Process.Start(defaultJava);
-                    JavaVersion = pr.StandardError.ReadLine().Split(' ')[2].Replace("\"", "");
-                    JavaVersionNumber = int.Parse(JavaVersion.Substring(0, 2));
+                    Process? pr = Process.Start(defaultJava);
+                    JavaVersion = pr?.StandardError?.ReadLine()?.Split(' ')[2].Replace("\"", "");
+                    JavaVersionNumber = int.Parse(JavaVersion?.Substring(0, 2));
                     
                 }
                 catch (Exception ex)
@@ -677,7 +677,7 @@ namespace Serein.Core.Server
         /// <returns>运行时间</returns>
         public static string Time => Status && _serverProcess is not null ? (DateTime.Now - _serverProcess.StartTime).ToCustomString() : string.Empty;
 
-        public static ProcessStartInfo StartInfo { get; private set; }
+        public static ProcessStartInfo? StartInfo { get; private set; }
         public static string? CurrentJavaPath { get; private set; }
 
         /// <summary>

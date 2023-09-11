@@ -27,10 +27,10 @@ namespace Serein.Windows.Pages.Server
     /// </summary>
     public partial class PlayerList : UiPage
     {
-        public static JObject? PlayerListData = Motd.PlayerListData;
+        public static JObject PlayerListData = Motd.PlayerListData;
         public static int CurrentSelectedIndex;
         //public bool isPlayerListNotNull = true;
-        public List<Player> items { get; set; }
+        public List<Player>? items { get; set; }
         public PlayerList()
         {
             
@@ -55,7 +55,7 @@ namespace Serein.Windows.Pages.Server
             PlayerListData = Motd.PlayerListData;
             try
             {
-                PlayerListItems = PlayerListData["sample"].ToString();
+                PlayerListItems = PlayerListData?["sample"]?.ToString();
             }
             catch
             {
@@ -66,10 +66,10 @@ namespace Serein.Windows.Pages.Server
             {
                 if (!string.IsNullOrEmpty(PlayerListItems))
                 {
-                    for (int a = 0; a < PlayerListData["sample"].Count(); a++)
+                    for (int a = 0; a < PlayerListData?["sample"]?.Count(); a++)
                     {
-                        string? Username = PlayerListData["sample"][a]["name"].ToString();
-                        string? UUID = PlayerListData["sample"][a]["id"].ToString();
+                        string? Username = PlayerListData["sample"]?[a]?["name"]?.ToString();
+                        string? UUID = PlayerListData["sample"]?[a]?["id"]?.ToString();
 
                         string UsernameFilter = Username + @"\[\/(.*?)\]";
                         string IPFilter = @"\[\/(.*?)\]";
@@ -137,7 +137,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -152,7 +152,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -167,7 +167,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -182,7 +182,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -197,7 +197,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -212,7 +212,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -227,7 +227,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -242,7 +242,7 @@ namespace Serein.Windows.Pages.Server
             string? username = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
                 //username = items[-1].Username;
             }
             catch
@@ -255,9 +255,11 @@ namespace Serein.Windows.Pages.Server
         private void BanPlayerIP_Click(object sender, RoutedEventArgs e)
         {
             string? username = null;
+            string? IP = null;
             try
             {
-                username = items[CurrentSelectedIndex].Username;
+                username = items?[CurrentSelectedIndex].Username;
+                IP = items?[CurrentSelectedIndex].IP;
                 //username = items[-1].Username;
             }
             catch
@@ -265,6 +267,7 @@ namespace Serein.Windows.Pages.Server
                 return;
             }
             ServerManager.InputCommand("ipban " + username);
+            ServerManager.InputCommand("ipban " + IP);
         }
 
         private void PlayerListView_MouseDown(object sender, MouseButtonEventArgs e)

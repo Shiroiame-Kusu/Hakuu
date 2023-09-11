@@ -47,7 +47,7 @@ namespace Serein.Windows.Pages.Server
                     ReloadinBackground();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 
             }
@@ -244,26 +244,26 @@ namespace Serein.Windows.Pages.Server
                 default:
                     throw new Exception();
             }
-            SERVER_SEED.Text = PropertiesOperation["level-seed"].ToString();
-            SERVER_PORT.Text = PropertiesOperation["server-port"].ToString();
+            SERVER_SEED.Text = PropertiesOperation["level-seed"]?.ToString();
+            SERVER_PORT.Text = PropertiesOperation["server-port"]?.ToString();
             try
             {
-                if(int.Parse(PropertiesOperation["server-port"].ToString()) != 0)
+                if(int.Parse(PropertiesOperation["server-port"]?.ToString()) != 0)
                     {
-                        Global.Settings.Server.Port = int.Parse(PropertiesOperation["server-port"].ToString());
+                        Global.Settings.Server.Port = int.Parse(PropertiesOperation["server-port"]?.ToString());
                     }
             }
             catch
             {
 
             }
-            SPAWNPOINT_PROTECT.Text = PropertiesOperation["spawn-protection"].ToString();
-            MAINWORLD_NAME.Text = PropertiesOperation["level-name"].ToString();
-            WORLD_BORDER.Text = PropertiesOperation["max-world-size"].ToString();
-            SERVER_MAXPLAYER.Text = PropertiesOperation["max-players"].ToString();
-            SERVER_MOTD.Text = PropertiesOperation["motd"].ToString();
-            SERVER_VIEWDISTANCE.Text = PropertiesOperation["view-distance"].ToString();
-            SERVER_SIMULATEDISTANCE.Text = PropertiesOperation["simulation-distance"].ToString();
+            SPAWNPOINT_PROTECT.Text = PropertiesOperation["spawn-protection"]?.ToString();
+            MAINWORLD_NAME.Text = PropertiesOperation["level-name"]?.ToString();
+            WORLD_BORDER.Text = PropertiesOperation["max-world-size"]?.ToString();
+            SERVER_MAXPLAYER.Text = PropertiesOperation["max-players"]?.ToString();
+            SERVER_MOTD.Text = PropertiesOperation["motd"]?.ToString();
+            SERVER_VIEWDISTANCE.Text = PropertiesOperation["view-distance"]?.ToString();
+            SERVER_SIMULATEDISTANCE.Text = PropertiesOperation["simulation-distance"]?.ToString();
 
 
 
