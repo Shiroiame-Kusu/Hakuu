@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using Serein.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +27,7 @@ namespace Serein.Windows.Pages.Function.Frp
     /// </summary>
     public partial class Login : UiPage
     {
+        private string token { get; set; }
         public Login()
         {
             InitializeComponent();
@@ -46,6 +51,32 @@ namespace Serein.Windows.Pages.Function.Frp
                 UseShellExecute = true
             });
             e.Handled = true;
+        }
+
+        private async void Login_Click(object sender, RoutedEventArgs e)
+        {
+            Username.IsEnabled = false;
+            Password.IsEnabled = false;
+            using var client = new HttpClient();
+            var result = await client.GetAsync("https://api.locyanfrp.cn/User/DoLogin?username=" + Username.Text + "&password=" + Password.Text);
+            
+            JObject? ParsedResult = JObject.Parse(result.Content.ReadAsStringAsync().ToString());
+            if(result.StatusCode.ToString() == "200")
+            {
+                if(ParsedResult["status"].ToString() == "0")
+                {
+                    token = ParsedResult["token"].ToString();
+                }
+                else
+                {
+                    Logger.MsgBox("Serein", ParsedResult["message"].ToString(), 0, 48);
+                }
+            }
+            else
+            {
+                Logger.MsgBox("Serein", "请检查您的网络连接", 0, 48);
+            }
+            
         }
     }
 }

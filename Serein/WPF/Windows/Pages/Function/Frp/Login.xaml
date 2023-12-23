@@ -42,14 +42,14 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <GroupBox Grid.Row="0" Margin="20,0,20,10" Header="用户名" FontSize="12">
-                            <TextBox Grid.Row="0" Margin="5" MinHeight="40" VerticalAlignment="Center" ToolTip="用户名" />
+                            <TextBox Grid.Row="0" Margin="5" MinHeight="40" VerticalAlignment="Center" ToolTip="用户名" Name="Username"/>
                         </GroupBox>
 
                         <GroupBox Grid.Row="1" Margin="20,10" Header="密码" FontSize="12">
-                            <TextBox Grid.Row="1" Margin="5" MinHeight="40" VerticalAlignment="Center" ToolTip="密码"/>
+                            <TextBox Grid.Row="1" Margin="5" MinHeight="40" VerticalAlignment="Center" ToolTip="密码" Name="Password"/>
                         </GroupBox>
                         
-                        <ui:Button Grid.Row="2" Content="登录" Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <ui:Button Grid.Row="2" Content="登录" Height="40" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center" Name="_Login" Click="Login_Click"/>
                     </Grid>
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>

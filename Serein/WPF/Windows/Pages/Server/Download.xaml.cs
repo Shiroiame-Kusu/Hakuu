@@ -78,6 +78,9 @@ namespace Serein.Windows.Pages.Server
                 ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
             }
             DownloadButton.IsEnabled = false;
+            Refresh.IsEnabled = false;
+            ServerDownloadName.IsEnabled = false;
+            ServerDownloadVersion.IsEnabled = false;
             var ServerName = ServerDownloadName.SelectedItem.ToString();
             var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
             CurrentServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
@@ -111,7 +114,7 @@ namespace Serein.Windows.Pages.Server
                 Logger.MsgBox("下载失败", "Serein", 0, 48);
             }
 
-            if (AutoSetupPath.IsChecked == true)
+            if ((bool)AutoSetupPath.IsChecked)
             {
                 Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
             }
@@ -119,7 +122,11 @@ namespace Serein.Windows.Pages.Server
             {
                 if (isDownloadFinished)
                 {
+                    Refresh.IsEnabled = true;
                     DownloadButton.IsEnabled = true;
+
+                    ServerDownloadVersion.IsEnabled = true;
+                    ServerDownloadName.IsEnabled = true;
                 }
             }catch
             {
@@ -329,12 +336,13 @@ namespace Serein.Windows.Pages.Server
                         DownloadProgressText.Dispatcher.Invoke(() =>
                         {
                             DownloadProgressText.Text = Math.Round((double)totalDownloadedByte / b / a, 2) + DownloadUnit + Math.Round((double)totalDownloadedByte / totalBytes * 100, 2).ToString() + "%";
-                        }); 
-                        if(totalDownloadedByte == totalBytes)
+                        });
+                        if (totalDownloadedByte == totalBytes)
                         {
                             break;
                         }
-                        Thread.Sleep(1000);
+
+                        Thread.Sleep(500);
                     }
                     
                     Task.FromResult(0);
