@@ -14,38 +14,47 @@ using Esprima.Ast;
 
 namespace Serein.Windows.Pages.Server
 {
+    
     public partial class Panel : UiPage
     {
         private readonly Timer _updateInfoTimer = new Timer(2000) { AutoReset = true };
         public static string ServerLog {get; set;}
+        private string CommandHeaderSelected = "";
+        private static bool IsBackgroundTaskRunning = false;
         public Panel()
         {
             InitializeComponent();
-            Task.Run(() => {
-                while (true)
-                {
-                    string? ServerType = null;
-                try
-                {
-                    ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                }
-                catch
-                {
+            if (!IsBackgroundTaskRunning)
+            {
+                Task.Run(() => {
+                    
+                    while (true)
+                    {
+                        IsBackgroundTaskRunning = true;
+                        string? ServerType = null;
+                        try
+                        {
+                            ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
+                        }
+                        catch
+                        {
 
-                }
+                        }
                         switch (ServerType)
                         {
                             case "jar":
-                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
-                                
+                                Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+
                                 break;
                             default:
-                            Dispatcher.Invoke(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                                Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
                                 break;
                         }
-                    System.Threading.Thread.Sleep(500);
-                }
-            });
+                        System.Threading.Thread.Sleep(500);
+                    }
+                });
+            }
+            
 
             
             
@@ -55,7 +64,7 @@ namespace Serein.Windows.Pages.Server
             PanelRichTextBox.Document.Blocks.Clear();
             lock (Catalog.Server.Cache)
             {
-                Catalog.Server.Cache.ForEach((line) => Dispatcher.Invoke(() => Append(LogPreProcessing.Color(line))));
+                Catalog.Server.Cache.ForEach((line) => Append(LogPreProcessing.Color(line)));
             }
             Catalog.Server.Panel = this;
         }
@@ -81,7 +90,7 @@ namespace Serein.Windows.Pages.Server
 
         private void Enter_Click(object sender, RoutedEventArgs e)
         {
-            ServerManager.InputCommand(InputBox.Text);
+            ServerManager.InputCommand(CommandHeaderSelected + InputBox.Text);
             InputBox.Text = "";
         }
 
@@ -90,7 +99,7 @@ namespace Serein.Windows.Pages.Server
             switch (e.Key)
             {
                 case Key.Enter:
-                    ServerManager.InputCommand(InputBox.Text);
+                    ServerManager.InputCommand(CommandHeaderSelected + InputBox.Text);
                     InputBox.Text = "";
                     e.Handled = true;
                     break;
@@ -129,7 +138,7 @@ namespace Serein.Windows.Pages.Server
 
         public void Append(Paragraph paragraph)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(() =>
                     {
                         PanelRichTextBox.Document = PanelRichTextBox.Document ?? new();
                         PanelRichTextBox.Document.Blocks.Add(paragraph);
@@ -204,6 +213,31 @@ namespace Serein.Windows.Pages.Server
                 // The Text property on a TextRange object returns a string
                 // representing the plain text content of the TextRange.
                 ServerLog = textRange.Text;
+        }
+
+        private void CommandHeaderSelected_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (CommandHeader.SelectedIndex)
+            {
+                case 0:
+                    CommandHeaderSelected = "";
+                    break;
+                case 1:
+                    CommandHeaderSelected = "say ";
+                    break;
+                case 2:
+                    CommandHeaderSelected = "kill ";
+                    break;
+                case 3:
+                    CommandHeaderSelected = "effect ";
+                    break;
+                case 4:
+                    CommandHeaderSelected = "whitelist ";
+                    break;
+                case 5:
+                    CommandHeaderSelected = "broadcast ";
+                    break;
+            }
         }
     }
 }

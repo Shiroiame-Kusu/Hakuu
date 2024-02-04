@@ -28,7 +28,6 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
-using System.Collections.Generic;
 
 namespace Serein.Windows.Pages.Server
 {
@@ -42,21 +41,21 @@ namespace Serein.Windows.Pages.Server
         public static string? DownloadAPI = "https://download.fastmirror.net/download/";
         public static string? VersionAPI;
         public static string? VersionAPIStatus;
-        public JObject VersionAPIDataPrase;
+        public JObject? VersionAPIDataPrase;
         public static string? DetailedAPI;
         public static string? DetailedAPIStatus;
-        public JObject DetailedAPIDataPrase;
-        public static int DownloadableServerNumber {get; set; }
-        public static int DownloadableServerVersion { get; set; }
-        public static string ServerPath;
+        public JObject? DetailedAPIDataPrase;
+        public static int? DownloadableServerNumber {get; set; }
+        public static int? DownloadableServerVersion { get; set; }
+        public static string? ServerPath;
         private double b;
 
-        public string DownloadUnit { get; private set; }
+        public string? DownloadUnit { get; private set; }
         public static int a { get; set;}
-        public string CurrentServerPath { get; private set; }
-        public string DownloadFileURL { get; private set; }
-        public static string ResponseStatus { get; private set; }
-        public static string ResponseData { get; private set; }
+        public string? CurrentServerPath { get; private set; }
+        public string? DownloadFileURL { get; private set; }
+        public static string? ResponseStatus { get; private set; }
+        public static string? ResponseData { get; private set; }
 
         public static bool isDownloadFinished = true;
         
@@ -79,6 +78,9 @@ namespace Serein.Windows.Pages.Server
                 ServerPath = AppDomain.CurrentDomain.BaseDirectory + "Serein-Server";
             }
             DownloadButton.IsEnabled = false;
+            Refresh.IsEnabled = false;
+            ServerDownloadName.IsEnabled = false;
+            ServerDownloadVersion.IsEnabled = false;
             var ServerName = ServerDownloadName.SelectedItem.ToString();
             var ServerVersion = ServerDownloadVersion.SelectedItem.ToString();
             CurrentServerPath = ServerPath + "\\" + ServerName + "\\" + ServerVersion;
@@ -96,9 +98,9 @@ namespace Serein.Windows.Pages.Server
                     DownloadFileURL = DownloadAPI + ServerName + "/" + ServerVersion + "/" + ServerDownloadCoreVersion.SelectedItem;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                DownloadFileURL = DownloadAPI + ServerName + "/" + ServerVersion + "/" + DetailedAPIDataPrase["data"]["builds"][0]["core_version"];
+                DownloadFileURL = DownloadAPI + ServerName + "/" + ServerVersion + "/" + DetailedAPIDataPrase?["data"]?["builds"]?[0]?["core_version"];
             }
             var DownloadStatus = DownloadFile(DownloadFileURL, CurrentServerPath + "\\server.jar");
             if (DownloadStatus == true)
@@ -112,17 +114,24 @@ namespace Serein.Windows.Pages.Server
                 Logger.MsgBox("下载失败", "Serein", 0, 48);
             }
 
-            if (AutoSetupPath.IsChecked == true)
+            if ((bool)AutoSetupPath.IsChecked)
             {
                 Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
+                if (Catalog.Server.Plugins != null) { Catalog.Server.Plugins.Load(); }
+                var Loader = new Settings.Server();
+                Loader.Path.Text = Global.Settings.Server.Path;
             }
             try
             {
                 if (isDownloadFinished)
                 {
+                    Refresh.IsEnabled = true;
                     DownloadButton.IsEnabled = true;
+
+                    ServerDownloadVersion.IsEnabled = true;
+                    ServerDownloadName.IsEnabled = true;
                 }
-            }catch(Exception ex)
+            }catch
             {
 
             }
@@ -157,13 +166,13 @@ namespace Serein.Windows.Pages.Server
                 }
                 
                 VersionAPIDataPrase = JObject.Parse(VersionAPI);
-                DownloadableServerNumber = VersionAPIDataPrase["data"].Count();
+                DownloadableServerNumber = VersionAPIDataPrase?["data"]?.Count();
                 for(int i = 0; i < DownloadableServerNumber; i++)
                 {
-                    ServerDownloadName.Items.Add(VersionAPIDataPrase["data"][i]["name"]);
+                    ServerDownloadName.Items.Add(VersionAPIDataPrase?["data"]?[i]?["name"]);
                 }
             }
-            catch(Exception ex){
+            catch{
                 
             }
 
@@ -208,31 +217,17 @@ namespace Serein.Windows.Pages.Server
             if (i >= 0)
             {
 
-                DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
+                DownloadableServerVersion = VersionAPIDataPrase?["data"]?[i]?["mc_versions"]?.Count();
             }
             else
             {
                 i = 0;
-                DownloadableServerVersion = VersionAPIDataPrase["data"][i]["mc_versions"].Count();
+                DownloadableServerVersion = VersionAPIDataPrase?["data"]?[i]?["mc_versions"]?.Count();
             }
             for (int i2 = 0; i2 < DownloadableServerVersion; i2++)
             {
-                ServerDownloadVersion.Items.Add(VersionAPIDataPrase["data"][i]["mc_versions"][i2]);
+                ServerDownloadVersion.Items.Add(VersionAPIDataPrase?["data"]?[i]?["mc_versions"]?[i2]);
             }
-            /*DownloadButton.IsEnabled = false;
-            var i = ServerDownloadName.SelectedIndex;
-            JObject APIDataPrase = JObject.Parse(APIResult);
-            DownloadableServerVersion = APIDataPrase["data"][i]["mc_versions"].Count();
-            ServerDownloadVersion.Items.Clear();
-            ServerDownloadCoreVersion.Items.Clear();
-            for (int i2 = 0;i2 < DownloadableServerVersion; i2++)
-            {
-                ServerDownloadVersion.Items.Add(APIDataPrase["data"][i]["mc_versions"][i2]);
-            }
-
-            DownloadButton.IsEnabled = false;
-            CoreVersion.Visibility = Visibility.Collapsed;
-            ServerDownloadVersion.IsEnabled = true;*/
         }
 
         private async void ServerDownloadVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -261,8 +256,7 @@ namespace Serein.Windows.Pages.Server
                             DetailedAPIDataPrase = JObject.Parse(DetailedAPI);
                             DownloadButton.IsEnabled = true;
                         }
-                    }catch(Exception ex)
-                    {
+                    }catch{
 
                     }
                 }
@@ -286,7 +280,7 @@ namespace Serein.Windows.Pages.Server
             LoadAPIInfo();
         }
 
-        private async void FetchDetail_Click(object sender, RoutedEventArgs e)
+        private void FetchDetail_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -305,7 +299,7 @@ namespace Serein.Windows.Pages.Server
             try
             {
                 isDownloadFinished = false;
-                HttpWebRequest Myrq = (HttpWebRequest)HttpWebRequest.Create(URL);
+                HttpWebRequest Myrq = (HttpWebRequest)WebRequest.Create(URL);
                 Myrq.Referer = "https://www.fastmirror.net/";
                 Myrq.Host = "download.fastmirror.net";
                 Myrq.Headers.Add("Origin", "https://www.fastmirror.net");
@@ -345,12 +339,13 @@ namespace Serein.Windows.Pages.Server
                         DownloadProgressText.Dispatcher.Invoke(() =>
                         {
                             DownloadProgressText.Text = Math.Round((double)totalDownloadedByte / b / a, 2) + DownloadUnit + Math.Round((double)totalDownloadedByte / totalBytes * 100, 2).ToString() + "%";
-                        }); 
-                        if(totalDownloadedByte == totalBytes)
+                        });
+                        if (totalDownloadedByte == totalBytes)
                         {
                             break;
                         }
-                        Thread.Sleep(1000);
+
+                        Thread.Sleep(500);
                     }
                     
                     Task.FromResult(0);
@@ -391,7 +386,7 @@ namespace Serein.Windows.Pages.Server
             try { Dispatcher.PushFrame(frame); }
             catch (InvalidOperationException) { }
         }
-        private static object ExitFrames(object frame)
+        private static object? ExitFrames(object frame)
         {
             ((DispatcherFrame)frame).Continue = false;
             return null;

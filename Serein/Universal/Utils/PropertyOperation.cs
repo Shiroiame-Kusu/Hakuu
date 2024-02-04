@@ -19,6 +19,10 @@ namespace Serein.Utils
         /// <param name="fileName">要读写的properties文件名</param>
         public PropertyOperation(string fileName)
         {
+            PropertyOperator(fileName);
+        }
+        public void PropertyOperator(string fileName)
+        {
             this.fileName = fileName;
             this.Load(fileName);
         }
@@ -27,7 +31,7 @@ namespace Serein.Utils
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        public override void Add(object key, object value)
+        public override void Add(object key, object? value)
         {
             base.Add(key, value);
             list.Add(key);
@@ -62,7 +66,7 @@ namespace Serein.Utils
             string bufLine = string.Empty;
             bool hasSep;
             bool precedingBackslash;
-            using (StreamReader sr = new StreamReader(filePath))
+            using (StreamReader? sr = new StreamReader(filePath))
             {
                 while (sr.Peek() >= 0)
                 {
@@ -132,7 +136,7 @@ namespace Serein.Utils
         /// <param name="filePath">要保存的文件的路径</param>
         public void Save()
         {
-            string filePath = this.fileName;
+            string? filePath = this.fileName;
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);

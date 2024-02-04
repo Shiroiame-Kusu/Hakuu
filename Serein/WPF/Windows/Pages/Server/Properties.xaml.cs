@@ -29,9 +29,12 @@ namespace Serein.Windows.Pages.Server
 
         public PropertyOperation PropertiesOperation;
         public static int i = 0;
+
+        private static bool IsBackgroundTaskRunning = false;
         public Properties()
         {
             InitializeComponent();
+
             PropertiesPage.IsEnabled = false;
             try
             {
@@ -47,7 +50,7 @@ namespace Serein.Windows.Pages.Server
                     ReloadinBackground();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 
             }
@@ -61,14 +64,12 @@ namespace Serein.Windows.Pages.Server
             {
                 Task.Run(() => {
                     while (true)
-                    {
-                        
-                        
-                        
+                    {   
+                        GC.Collect();
                             if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
                                 PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {   
 
                                     PropertiesPage.IsEnabled = true;
@@ -77,12 +78,12 @@ namespace Serein.Windows.Pages.Server
                             }
                             else
                             {
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {
                                     PropertiesPage.IsEnabled = false;
                                 }, System.Windows.Threading.DispatcherPriority.Background);
                             }
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                     }
 
                     
@@ -244,26 +245,26 @@ namespace Serein.Windows.Pages.Server
                 default:
                     throw new Exception();
             }
-            SERVER_SEED.Text = PropertiesOperation["level-seed"].ToString();
-            SERVER_PORT.Text = PropertiesOperation["server-port"].ToString();
+            SERVER_SEED.Text = PropertiesOperation["level-seed"]?.ToString();
+            SERVER_PORT.Text = PropertiesOperation["server-port"]?.ToString();
             try
             {
-                if(int.Parse(PropertiesOperation["server-port"].ToString()) != 0)
+                if(int.Parse(PropertiesOperation["server-port"]?.ToString()) != 0)
                     {
-                        Global.Settings.Server.Port = int.Parse(PropertiesOperation["server-port"].ToString());
+                        Global.Settings.Server.Port = int.Parse(PropertiesOperation["server-port"]?.ToString());
                     }
             }
             catch
             {
 
             }
-            SPAWNPOINT_PROTECT.Text = PropertiesOperation["spawn-protection"].ToString();
-            MAINWORLD_NAME.Text = PropertiesOperation["level-name"].ToString();
-            WORLD_BORDER.Text = PropertiesOperation["max-world-size"].ToString();
-            SERVER_MAXPLAYER.Text = PropertiesOperation["max-players"].ToString();
-            SERVER_MOTD.Text = PropertiesOperation["motd"].ToString();
-            SERVER_VIEWDISTANCE.Text = PropertiesOperation["view-distance"].ToString();
-            SERVER_SIMULATEDISTANCE.Text = PropertiesOperation["simulation-distance"].ToString();
+            SPAWNPOINT_PROTECT.Text = PropertiesOperation["spawn-protection"]?.ToString();
+            MAINWORLD_NAME.Text = PropertiesOperation["level-name"]?.ToString();
+            WORLD_BORDER.Text = PropertiesOperation["max-world-size"]?.ToString();
+            SERVER_MAXPLAYER.Text = PropertiesOperation["max-players"]?.ToString();
+            SERVER_MOTD.Text = PropertiesOperation["motd"]?.ToString();
+            SERVER_VIEWDISTANCE.Text = PropertiesOperation["view-distance"]?.ToString();
+            SERVER_SIMULATEDISTANCE.Text = PropertiesOperation["simulation-distance"]?.ToString();
 
 
 

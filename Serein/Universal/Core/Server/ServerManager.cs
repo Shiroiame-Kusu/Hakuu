@@ -8,11 +8,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using RegExp = System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Documents;
-using System.Windows.Controls;
+using RegExp = System.Text.RegularExpressions;
 
 namespace Serein.Core.Server
 {
@@ -97,8 +95,8 @@ namespace Serein.Core.Server
         public static string? JEStartMaxRam { get; set; }
         public static string? JavaVersion { get; set; }
         public static int? JavaVersionNumber { get; set; }
-        public static bool AbleToUse_incubator_vector { get; set;}
-        public static string? Use_incubator_vector {get; set;}
+        public static bool AbleToUse_incubator_vector { get; set; }
+        public static string? Use_incubator_vector { get; set; }
         public static bool? StartResult;
 
         /// <summary>
@@ -169,28 +167,29 @@ namespace Serein.Core.Server
                 Logger.Output(LogType.Server_Clear);
 #endif
                 Logger.Output(LogType.Server_Notice, "启动中");
-                
+
                 string ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                if(string.IsNullOrEmpty(Global.Settings.Server.MaxRAM))
-                { 
+                if (string.IsNullOrEmpty(Global.Settings.Server.MaxRAM))
+                {
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
                     double AutoSetRAM = Math.Round(AvailableRAM * 0.8, 0);
                     Global.Settings.Server.MaxRAM = AutoSetRAM.ToString();
                     JEStartMaxRam = Global.Settings.Server.MaxRAM;
                     Logger.MsgBox("未设置最大内存\n已自动为您设置启动内存为 " + JEStartMaxRam + "M", "Serein", 0, 48);
-                    
+
                 }
                 else
                 {
                     JEStartMaxRam = Global.Settings.Server.MaxRAM;
                 }
                 string? JavaPathSettings = Global.Settings.Server.JavaPath;
-                if (string.IsNullOrEmpty(JavaPathSettings) == true){
+                if (string.IsNullOrEmpty(JavaPathSettings) == true)
+                {
                     CurrentJavaPath = "java";
                 }
                 else
-                {   
+                {
                     CurrentJavaPath = Global.Settings.Server.JavaPath;
                 }
                 try
@@ -202,16 +201,16 @@ namespace Serein.Core.Server
                     defaultJava.UseShellExecute = false;
                     defaultJava.CreateNoWindow = true;
 
-                    Process pr = Process.Start(defaultJava);
-                    JavaVersion = pr.StandardError.ReadLine().Split(' ')[2].Replace("\"", "");
-                    JavaVersionNumber = int.Parse(JavaVersion.Substring(0, 2));
-                    
+                    Process? pr = Process.Start(defaultJava);
+                    JavaVersion = pr?.StandardError?.ReadLine()?.Split(' ')[2].Replace("\"", "");
+                    JavaVersionNumber = int.Parse(JavaVersion?.Substring(0, 2));
+
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Exception is " + ex.Message);
                 }
-                if(JavaVersionNumber == 16 || JavaVersionNumber == 17 || JavaVersionNumber == 18 || JavaVersionNumber == 19)
+                if (JavaVersionNumber == 16 || JavaVersionNumber == 17 || JavaVersionNumber == 18 || JavaVersionNumber == 19)
                 {
                     AbleToUse_incubator_vector = true;
                     Use_incubator_vector = " --add-modules=jdk.incubator.vector";
@@ -223,7 +222,7 @@ namespace Serein.Core.Server
 
                 #region 主变量初始化
                 if (ServerType == "jar")
-                {
+                {   
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
                     if (Global.Settings.Server.AutoJVMOptimization)
@@ -251,7 +250,7 @@ namespace Serein.Core.Server
                     {
                         JEOptimizationArguments = Use_incubator_vector;
                     }
-                    
+
                     ProcessStartInfo ServerStartInfo = new ProcessStartInfo(Global.Settings.Server.Path)
                     {
 
@@ -280,10 +279,10 @@ namespace Serein.Core.Server
                         StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
                         WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
                     };
-                    
+
                     StartInfo = ServerStartInfo;
                 }
-                
+
                 _serverProcess = Process.Start(StartInfo);
                 _serverProcess!.EnableRaisingEvents = true;
                 _serverProcess.Exited += (_, _) => CloseAll();
@@ -306,7 +305,8 @@ namespace Serein.Core.Server
                 Difficulty = string.Empty;
                 _tempLine = string.Empty;
                 CommandHistory.Clear();
-                StartFileName = Path.GetFileName(Global.Settings.Server.Path);
+                //StartFileName = Path.GetFileName(Global.Settings.Server.Path);
+                StartFileName = ServerType == "jar" ? Path.GetFullPath(Global.Settings.Server.Path) : Path.GetFileName(Global.Settings.Server.Path);
                 _prevProcessCpuTime = TimeSpan.Zero;
                 #endregion
 
@@ -322,8 +322,8 @@ namespace Serein.Core.Server
             return false;
         }
         public static void MainProcess()
-        {   
-            
+        {
+
         }
         /// <summary>
         /// 关闭服务器
@@ -677,7 +677,7 @@ namespace Serein.Core.Server
         /// <returns>运行时间</returns>
         public static string Time => Status && _serverProcess is not null ? (DateTime.Now - _serverProcess.StartTime).ToCustomString() : string.Empty;
 
-        public static ProcessStartInfo StartInfo { get; private set; }
+        public static ProcessStartInfo? StartInfo { get; private set; }
         public static string? CurrentJavaPath { get; private set; }
 
         /// <summary>
