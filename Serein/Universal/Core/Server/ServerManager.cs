@@ -222,7 +222,7 @@ namespace Serein.Core.Server
 
                 #region 主变量初始化
                 if (ServerType == "jar")
-                {
+                {   
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
                     if (Global.Settings.Server.AutoJVMOptimization)

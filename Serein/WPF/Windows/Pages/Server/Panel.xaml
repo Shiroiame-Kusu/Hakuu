@@ -203,6 +203,31 @@
             Header="控制台">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Bottom">
+                    <ComboBox 
+                        DockPanel.Dock="Left"
+                        Margin="5"
+                        SelectedIndex="0"
+                        SelectionChanged="CommandHeaderSelected_SelectionChanged"
+                        Name="CommandHeader">
+                        <ComboBoxItem >
+                            /
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            say
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            kill
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            effect
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            whitelist
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            broadcast
+                        </ComboBoxItem>
+                    </ComboBox>
                     <ui:Button
                         Margin="5"
                         Padding="0,3"

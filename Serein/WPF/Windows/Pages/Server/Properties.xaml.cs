@@ -29,9 +29,12 @@ namespace Serein.Windows.Pages.Server
 
         public PropertyOperation PropertiesOperation;
         public static int i = 0;
+
+        private static bool IsBackgroundTaskRunning = false;
         public Properties()
         {
             InitializeComponent();
+
             PropertiesPage.IsEnabled = false;
             try
             {
@@ -61,14 +64,12 @@ namespace Serein.Windows.Pages.Server
             {
                 Task.Run(() => {
                     while (true)
-                    {
-                        
-                        
-                        
+                    {   
+                        GC.Collect();
                             if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
                                 PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {   
 
                                     PropertiesPage.IsEnabled = true;
@@ -77,12 +78,12 @@ namespace Serein.Windows.Pages.Server
                             }
                             else
                             {
-                                Dispatcher.Invoke(() =>
+                                Dispatcher.InvokeAsync(() =>
                                 {
                                     PropertiesPage.IsEnabled = false;
                                 }, System.Windows.Threading.DispatcherPriority.Background);
                             }
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                     }
 
                     

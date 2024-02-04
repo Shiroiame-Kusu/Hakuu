@@ -9,7 +9,8 @@ namespace Serein.Windows.Pages.Settings
     public partial class Server : UiPage
     {
         private readonly bool _loaded;
-
+        
+        
         public Server()
         {
             InitializeComponent();
@@ -37,6 +38,7 @@ namespace Serein.Windows.Pages.Settings
             LineTerminator.Text = Global.Settings.Server.LineTerminator.Replace("\r", "\\r").Replace("\n", "\\n");
 
         }
+        
 
         private void StopCommands_TextChanged(object sender, TextChangedEventArgs e)
             => Global.Settings.Server.StopCommands = StopCommands.Text.Replace("\r", string.Empty).Trim('\r', '\n', ' ').Split('\n');

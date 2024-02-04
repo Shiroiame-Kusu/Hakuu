@@ -19,6 +19,10 @@ namespace Serein.Utils
         /// <param name="fileName">要读写的properties文件名</param>
         public PropertyOperation(string fileName)
         {
+            PropertyOperator(fileName);
+        }
+        public void PropertyOperator(string fileName)
+        {
             this.fileName = fileName;
             this.Load(fileName);
         }

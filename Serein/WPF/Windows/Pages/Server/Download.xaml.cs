@@ -117,6 +117,9 @@ namespace Serein.Windows.Pages.Server
             if ((bool)AutoSetupPath.IsChecked)
             {
                 Global.Settings.Server.Path = CurrentServerPath + "\\server.jar";
+                if (Catalog.Server.Plugins != null) { Catalog.Server.Plugins.Load(); }
+                var Loader = new Settings.Server();
+                Loader.Path.Text = Global.Settings.Server.Path;
             }
             try
             {

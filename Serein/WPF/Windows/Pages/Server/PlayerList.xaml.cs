@@ -31,21 +31,24 @@ namespace Serein.Windows.Pages.Server
         public static int CurrentSelectedIndex;
         //public bool isPlayerListNotNull = true;
         public List<Player>? items { get; set; }
+        private static bool IsBackgroundTaskRunning = false;
         public PlayerList()
         {
             
             InitializeComponent();
-
-            Task.Run(() =>
+            if (!IsBackgroundTaskRunning)
             {
-                
-                while (true)
-                {
-                    refresh();
-                    Thread.Sleep(500);
-                }
-            });
-            
+                IsBackgroundTaskRunning = true;
+                Task.Run(() =>
+                {   
+                    
+                    while (true)
+                    {
+                        refresh();
+                        Thread.Sleep(500);
+                    }
+                });
+            }
 
         }
         
@@ -96,10 +99,10 @@ namespace Serein.Windows.Pages.Server
 
             }
 
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(() =>
             {
                 PlayerListView.ItemsSource = items;
-            });
+            },System.Windows.Threading.DispatcherPriority.Background);
         }
         private void ListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {

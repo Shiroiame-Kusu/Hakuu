@@ -44,12 +44,12 @@ namespace Serein.Windows.Pages.Server
                     switch (ServerType)
                     {
                         case "jar":
-                            Dispatcher.Invoke(() => { MinecraftProperties.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
-                            Dispatcher.Invoke(() => { PlayerList.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.InvokeAsync(() => { MinecraftProperties.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.InvokeAsync(() => { PlayerList.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
                             break;
                         default:
-                            Dispatcher.Invoke(() => { MinecraftProperties.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
-                            Dispatcher.Invoke(() => { PlayerList.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.InvokeAsync(() => { MinecraftProperties.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                            Dispatcher.InvokeAsync(() => { PlayerList.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
                             break;
                     }
                     System.Threading.Thread.Sleep(500);
