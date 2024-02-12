@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+
 
 #if !CONSOLE
 using Ookii.Dialogs.Wpf;
@@ -28,6 +30,8 @@ namespace Serein.Utils
         {
             CrashInterception.Init();
             Debug.WriteLine(Global.LOGO);
+            ProcessThreadCollection threadCollection = Process.GetCurrentProcess().Threads;
+
             Directory.SetCurrentDirectory(Global.PATH);
             IO.ReadAll();
             Task.Run(SystemInfo.Init);

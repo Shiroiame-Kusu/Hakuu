@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using static Serein.Base.Motd.MotdjePacket;
 
 namespace Serein.Base.Motd
 {
@@ -113,16 +114,38 @@ namespace Serein.Base.Motd
                 Origin = Origin.Substring(Origin.IndexOf('{'));
                 Logger.Output(LogType.Debug, $"Origin: {Origin}");
 
-                MotdjePacket.Packet packet = JsonConvert.DeserializeObject<MotdjePacket.Packet>(Origin) ?? throw new ArgumentNullException();
+                //MotdjePacket.Packet packet = JsonConvert.DeserializeObject<MotdjePacket.Packet>(Origin) ?? throw new ArgumentNullException();
                 JObject PacketData = JObject.Parse(Origin);
                 PlayerListData = PacketData["players"]?.ToObject<JObject>();
                 IsSuccessful = true;
-                OnlinePlayer = packet.Players.Online;
+                try
+                {
+                    MotdjePacket.Packet packet = JsonConvert.DeserializeObject<MotdjePacket.Packet>(Origin);
+                    OnlinePlayer = packet.Players.Online;
+                    MaxPlayer = packet.Players.Max;
+                    Version = packet.Version.Name;
+                    Protocol = packet.Version.Protocol.ToString();
+                    Description = packet.Description?.Text;
+                    Favicon = packet.Favicon;
+                }
+                catch(Exception e)
+                {   
+                    Console.WriteLine(e.ToString());
+                    OnlinePlayer = (long)PacketData["players"]["online"];
+                    MaxPlayer = (long)PacketData["players"]["max"];
+                    Version = PacketData["version"]["name"].ToString();
+                    Protocol = PacketData["version"]["protocol"].ToString();
+                    Description = PacketData["description"].ToString();
+                    //Favicon = PacketData.Favicon;
+                }
+
+                /*OnlinePlayer = packet.Players.Online;
                 MaxPlayer = packet.Players.Max;
                 Version = packet.Version.Name;
                 Protocol = packet.Version.Protocol.ToString();
                 Description = packet.Description?.Text;
                 Favicon = packet.Favicon;
+                */
             }
             else
             {
