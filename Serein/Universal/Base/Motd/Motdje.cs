@@ -130,7 +130,6 @@ namespace Serein.Base.Motd
                 }
                 catch(Exception e)
                 {   
-                    Console.WriteLine(e.ToString());
                     OnlinePlayer = (long)PacketData["players"]["online"];
                     MaxPlayer = (long)PacketData["players"]["max"];
                     Version = PacketData["version"]["name"].ToString();

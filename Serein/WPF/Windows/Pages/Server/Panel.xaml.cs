@@ -62,6 +62,7 @@ namespace Serein.Windows.Pages.Server
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
             _updateInfoTimer.Start();
             PanelRichTextBox.Document.Blocks.Clear();
+            MaxRAM.Text = Global.Settings.Server.MaxRAM;
             lock (Catalog.Server.Cache)
             {
                 Catalog.Server.Cache.ForEach((line) => Append(LogPreProcessing.Color(line)));
@@ -71,7 +72,7 @@ namespace Serein.Windows.Pages.Server
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            Global.Settings.Server.MaxRAM = MaxRAM.Text;
+            
             ServerManager.Start();
             UpdateInfos();
         }
@@ -238,6 +239,11 @@ namespace Serein.Windows.Pages.Server
                     CommandHeaderSelected = "broadcast ";
                     break;
             }
+        }
+
+        private void MaxRAM_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Global.Settings.Server.MaxRAM = MaxRAM.Text;
         }
     }
 }

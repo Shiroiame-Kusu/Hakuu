@@ -32,6 +32,8 @@ namespace Serein.Windows.Pages.Server
         //public bool isPlayerListNotNull = true;
         public List<Player>? items { get; set; }
         private static bool IsBackgroundTaskRunning = false;
+        public bool isSelecting = false;
+        public static string PlayerListItemsOld = null;
         public PlayerList()
         {
             
@@ -60,17 +62,21 @@ namespace Serein.Windows.Pages.Server
             {
                 PlayerListItems = PlayerListData?["sample"]?.ToString();
             }
-            catch
+            catch(Exception e)
             {
-
+                Console.WriteLine(e.ToString());
+                items.Clear();
             }
             items = new List<Player>();
             if (ServerManager.Status)
-            {
+            {   
                 if (!string.IsNullOrEmpty(PlayerListItems))
                 {
-                    for (int a = 0; a < PlayerListData?["sample"]?.Count(); a++)
-                    {
+                    
+                   for (int a = 0; 
+                        a < PlayerListData?["sample"]?.Count(); 
+                        a++)
+                        {
                         string? Username = PlayerListData["sample"]?[a]?["name"]?.ToString();
                         string? UUID = PlayerListData["sample"]?[a]?["id"]?.ToString();
 
@@ -85,24 +91,44 @@ namespace Serein.Windows.Pages.Server
                             str = str.Remove(0, 2);
                             IP = str.Substring(0, str.Length - 1);
                         }
-                        catch
+                        catch(Exception e)
                         {
 
                         }
                         
                         items.Add(new Player() { Username = Username, UUID = UUID, IP = IP });
+                        
+                            
+                        
+                    }
+                    
+                }
+                if (string.IsNullOrEmpty(PlayerListItemsOld) && !isSelecting)
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        PlayerListView.ItemsSource = items;
+                    }, System.Windows.Threading.DispatcherPriority.Background);
+                    PlayerListItemsOld = PlayerListItems;
+                }
+                try
+                {
+                    if (PlayerListItems != PlayerListItemsOld)
+                    {
+                        Dispatcher.BeginInvoke(() =>
+                        {
+                            PlayerListView.ItemsSource = items;
+                        }, System.Windows.Threading.DispatcherPriority.Background);
+                        PlayerListItemsOld = PlayerListItems;
                     }
                 }
-            }
-            else
-            {
+                catch
+                {
 
+                }
             }
 
-            Dispatcher.BeginInvoke(() =>
-            {
-                PlayerListView.ItemsSource = items;
-            },System.Windows.Threading.DispatcherPriority.Background);
+            
         }
         private void ListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -279,6 +305,9 @@ namespace Serein.Windows.Pages.Server
             {
                 CurrentSelectedIndex = PlayerListView.SelectedIndex;
             }
+            isSelecting = true;
+
+
         }
     }
     public class Player

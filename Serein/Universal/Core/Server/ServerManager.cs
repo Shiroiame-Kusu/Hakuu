@@ -174,8 +174,8 @@ namespace Serein.Core.Server
                     PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     float AvailableRAM = ramCounter.NextValue();
                     double AutoSetRAM = Math.Round(AvailableRAM * 0.8, 0);
-                    Global.Settings.Server.MaxRAM = AutoSetRAM.ToString();
-                    JEStartMaxRam = Global.Settings.Server.MaxRAM;
+                    
+                    JEStartMaxRam = AutoSetRAM.ToString();
                     Logger.MsgBox("未设置最大内存\n已自动为您设置启动内存为 " + JEStartMaxRam + "M", "Serein", 0, 48);
 
                 }
@@ -261,8 +261,9 @@ namespace Serein.Core.Server
                         RedirectStandardOutput = true,
                         RedirectStandardInput = true,
                         StandardOutputEncoding = _encodings[Global.Settings.Server.OutputEncoding],
-                        WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path)
+                        WorkingDirectory = Path.GetDirectoryName(Global.Settings.Server.Path),
                     };
+                    Console.WriteLine(JEStartMaxRam + "M " + JEOptimizationArguments);
                     StartInfo = ServerStartInfo;
                     File.WriteAllText(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\eula.txt", "eula=true");
                 }
@@ -282,7 +283,7 @@ namespace Serein.Core.Server
 
                     StartInfo = ServerStartInfo;
                 }
-
+                Logger.Output(LogType.Server_Notice, $"使用的jvm启动参数: {JEOptimizationArguments}\n");
                 _serverProcess = Process.Start(StartInfo);
                 _serverProcess!.EnableRaisingEvents = true;
                 _serverProcess.Exited += (_, _) => CloseAll();
@@ -484,7 +485,7 @@ namespace Serein.Core.Server
                         CommandHistory.Count == 0) &&
                         !isFromCommand && // 通过Serein命令执行的不计入
                         !string.IsNullOrEmpty(command)) // 为空不计入
-                {
+                { 
                     CommandHistory.Add(command);
                 }
                 CommandHistoryIndex = CommandHistory.Count;
@@ -520,7 +521,8 @@ namespace Serein.Core.Server
         private static void SortOutputHandler(object sender, DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
-            {
+            {   
+
                 string lineFiltered = LogPreProcessing.Filter(e.Data);
                 Console.WriteLine(lineFiltered);
                 if (string.IsNullOrEmpty(LevelName) && RegExp.Regex.IsMatch(lineFiltered, Global.Settings.Matches.LevelName, RegExp.RegexOptions.IgnoreCase))

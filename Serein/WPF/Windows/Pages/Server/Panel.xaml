@@ -187,7 +187,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ui:TextBox Grid.Row="0" Name="MaxRAM" Margin="5,0"/>
+                        <ui:TextBox Grid.Row="0" Name="MaxRAM" Margin="5,0" TextChanged="MaxRAM_TextChanged"/>
                         <ui:ToggleSwitch Grid.Row="1" Name="AutoJVMOptimization" Click="AutoJVMOptimization_Click" Content="启用自动优化" Margin="5"/>
                     </Grid>    
             </GroupBox>

@@ -53,7 +53,8 @@
                             Name="Refresh"
                             Click="MenuItem_Click"
                             Header="刷新"
-                            SymbolIcon="ArrowClockwise24" />
+                            SymbolIcon="ArrowClockwise24" 
+                            Tag="Refresh"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>

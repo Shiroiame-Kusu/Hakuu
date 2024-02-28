@@ -193,12 +193,12 @@ namespace Serein.Core.Server
             {
                 return;
             }
+            Get();
             Process.Start(new ProcessStartInfo("Explorer.exe")
             {
-                Arguments = !string.IsNullOrEmpty(path)
-                ? $"/e,/select,\"{path}\""
-                : $"/e,\"{BasePath}\""
+                Arguments = !string.IsNullOrEmpty(path) ? $"/e,/select,\"{path}\"" : $"/e,\"{BasePath}\""
             });
+            
         }
 
         /// <summary>

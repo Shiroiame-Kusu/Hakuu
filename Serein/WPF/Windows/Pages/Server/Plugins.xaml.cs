@@ -102,7 +102,14 @@ namespace Serein.Windows.Pages.Server
                     case "OpenFolder":
                         if (PluginsListview.SelectedIndex < 0)
                         {
+                            string DirectoryName = Path.GetDirectoryName(Global.Settings.Server.Path);
+                            if (!Directory.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\plugins"))
+                            {   
+                                Console.WriteLine(DirectoryName);
+                                Directory.CreateDirectory(DirectoryName + "\\plugins");
+                            }
                             PluginManager.OpenFolder();
+                            
                         }
                         else
                         {
