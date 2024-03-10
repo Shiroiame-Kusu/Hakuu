@@ -1,0 +1,198 @@
+﻿using Hakuu.Base;
+using Hakuu.Utils;
+using Hakuu.Ui.ChildrenWindow;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace Hakuu.Ui
+{
+    public partial class Ui : Form
+    {
+        private void ScheduleList_MouseUp(object sender, MouseEventArgs e)
+        {
+            _isDragging = false;
+            if ((ScheduleList.SelectedItems.Count != 0) && (_itemDraged != null))
+            {
+                if (_itemDraged.Index != ScheduleList.SelectedItems[0].Index && _itemDraged.Index >= 0)
+                {
+                    ScheduleList.Items.RemoveAt(_itemDraged.Index);
+                    ScheduleList.Items.Insert(ScheduleList.SelectedItems[0].Index, _itemDraged);
+                    _itemDraged = null;
+                    SaveSchedule();
+                }
+            }
+        }
+
+        private void ScheduleList_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            _itemDraged = (ListViewItem)e.Item!;
+            _isDragging = true;
+        }
+
+        private void ScheduleList_ItemMouseHover(object sender, ListViewItemMouseHoverEventArgs e)
+        {
+            e.Item.Selected = _isDragging;
+        }
+
+        private void ScheduleContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+            ScheduleContextMenuStrip_Edit.Enabled = ScheduleList.SelectedItems.Count > 0;
+            ScheduleContextMenuStrip_Delete.Enabled = ScheduleList.SelectedItems.Count > 0;
+            ScheduleContextMenuStrip_Enable.Enabled = ScheduleList.SelectedItems.Count > 0 && ScheduleList.SelectedItems[0].ForeColor == Color.Gray;
+            ScheduleContextMenuStrip_Disable.Enabled = ScheduleList.SelectedItems.Count > 0 && ScheduleList.SelectedItems[0].ForeColor != Color.Gray;
+            ScheduleContextMenuStrip_Clear.Enabled = ScheduleList.Items.Count > 0;
+        }
+
+        private void ScheduleContextMenuStrip_Enable_Click(object sender, EventArgs e)
+        {
+            if (ScheduleList.SelectedItems.Count >= 1)
+            {
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].ForeColor = Color.Black;
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].SubItems[1].ForeColor = Color.Black;
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].SubItems[2].ForeColor = Color.Black;
+                SaveSchedule();
+            }
+        }
+
+        private void ScheduleContextMenuStrip_Disable_Click(object sender, EventArgs e)
+        {
+            if (ScheduleList.SelectedItems.Count >= 1)
+            {
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].ForeColor = Color.Gray;
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].SubItems[1].ForeColor = Color.Gray;
+                ScheduleList.Items[ScheduleList.SelectedIndices[0]].SubItems[2].ForeColor = Color.Gray;
+                SaveSchedule();
+            }
+        }
+
+        private void ScheduleContextMenuStrip_Add_Click(object sender, EventArgs e)
+        {
+            ScheduleEditor Editor = new();
+            Editor.ShowDialog(this);
+            if (Editor.CancelFlag)
+            {
+                return;
+            }
+            ListViewItem Item = new(Editor.Cron.Text);
+            Item.SubItems.Add(Editor.Remark.Text);
+            Item.SubItems.Add(Editor.Command.Text);
+            if (ScheduleList.SelectedItems.Count > 0)
+            {
+                ScheduleList.Items.Insert(ScheduleList.SelectedItems[0].Index + 1, Item);
+            }
+            else
+            {
+                ScheduleList.Items.Add(Item);
+            }
+            SaveSchedule();
+        }
+
+        private void ScheduleContextMenuStrip_Edit_Click(object sender, EventArgs e)
+        {
+            if (ScheduleList.SelectedItems.Count >= 1)
+            {
+                ScheduleEditor Editor = new();
+                Editor.Update(
+                    ScheduleList.SelectedItems[0].Text,
+                    ScheduleList.SelectedItems[0].SubItems[1].Text,
+                    ScheduleList.SelectedItems[0].SubItems[2].Text
+                    );
+                Editor.ShowDialog(this);
+                if (Editor.CancelFlag)
+                {
+                    return;
+                }
+                ScheduleList.SelectedItems[0].Text = Editor.Cron.Text;
+                ScheduleList.SelectedItems[0].SubItems[1].Text = Editor.Remark.Text;
+                ScheduleList.SelectedItems[0].SubItems[2].Text = Editor.Command.Text;
+            }
+            SaveSchedule();
+        }
+
+        private void ScheduleContextMenuStrip_Delete_Click(object sender, EventArgs e)
+        {
+            if (ScheduleList.SelectedItems.Count > 0)
+            {
+                int result = (int)MessageBox.Show(
+                    "确定删除该任务？\n" +
+                    "它将会永远失去！（真的很久！）", "Hakuu",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Information
+                    );
+                if (result == 1)
+                {
+                    ScheduleList.Items.RemoveAt(ScheduleList.SelectedItems[0].Index);
+                    SaveSchedule();
+                }
+            }
+        }
+
+        private void ScheduleContextMenuStrip_Clear_Click(object sender, EventArgs e)
+        {
+            if (ScheduleList.Items.Count > 0)
+            {
+                int result = (int)MessageBox.Show(
+                    "确定删除所有任务？\n" +
+                    "它将会永远失去！（真的很久！）", "Hakuu",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Information
+                    );
+                if (result == 1)
+                {
+                    ScheduleList.Items.Clear();
+                    SaveSchedule();
+                }
+            }
+        }
+
+        private void ScheduleContextMenuStrip_Refresh_Click(object sender, EventArgs e)
+        {
+            IO.ReadSchedule();
+            LoadSchedule();
+            SaveSchedule();
+        }
+
+        private void SaveSchedule()
+        {
+            List<Schedule> list = new();
+            foreach (ListViewItem listViewItem in ScheduleList.Items)
+            {
+                list.Add(new()
+                {
+                    Cron = listViewItem.Text,
+                    Remark = listViewItem.SubItems[1].Text,
+                    Command = listViewItem.SubItems[2].Text,
+                    Enable = listViewItem.ForeColor != Color.Gray
+                });
+            }
+            Global.Schedules = list;
+            IO.SaveSchedule();
+        }
+
+        public void LoadSchedule()
+        {
+            ScheduleList.BeginUpdate();
+            ScheduleList.Items.Clear();
+            foreach (Schedule schedule in Global.Schedules)
+            {
+                ListViewItem listViewItem = new(schedule.Cron);
+                listViewItem.SubItems.Add(schedule.Remark);
+                listViewItem.SubItems.Add(schedule.Command);
+                if (!schedule.Enable)
+                {
+                    listViewItem.ForeColor = Color.Gray;
+                    listViewItem.SubItems[1].ForeColor = Color.Gray;
+                    listViewItem.SubItems[2].ForeColor = Color.Gray;
+                }
+                ScheduleList.Items.Add(listViewItem);
+            }
+            ScheduleList.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            ScheduleList.EndUpdate();
+        }
+
+        private void ScheduleContextMenuStrip_Command_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://Hakuu.cc/docs/guide/command") { UseShellExecute = true });
+        private void ScheduleContextMenuStrip_Variables_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://Hakuu.cc/docs/guide/variables") { UseShellExecute = true });
+    }
+}

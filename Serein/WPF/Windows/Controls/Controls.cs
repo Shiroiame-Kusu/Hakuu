@@ -1,1 +1,0 @@
-namespace Serein.Windows.Controls;

@@ -6,28 +6,28 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "Serein/Console/"
+    directory: "Hakuu/Console/"
     schedule:
       interval: "weekly"
     labels:
       - "🔨依赖"
 
   - package-ecosystem: "nuget"
-    directory: "Serein/Console_For_Unix/"
+    directory: "Hakuu/Console_For_Unix/"
     schedule:
       interval: "weekly"
     labels:
       - "🔨依赖"
 
   - package-ecosystem: "nuget"
-    directory: "Serein/Winform/"
+    directory: "Hakuu/Winform/"
     schedule:
       interval: "weekly"
     labels:
       - "🔨依赖"
 
   - package-ecosystem: "nuget"
-    directory: "Serein/WPF/"
+    directory: "Hakuu/WPF/"
     schedule:
       interval: "weekly"
     labels:
