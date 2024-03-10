@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-windows;net472</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+		<LangVersion>10</LangVersion>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>..\Universal\Sources\Hakuu.ico</ApplicationIcon>
+		<RootNamespace>Hakuu</RootNamespace>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>portable</DebugType>
+		<Optimize>False</Optimize>
+		<DefineConstants>$(DefineConstants)TRACE;CONSOLE</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<Optimize>True</Optimize>
+		<DebugType>embedded</DebugType>
+		<DefineConstants>$(DefineConstants)TRACE;CONSOLE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="../Universal/**/*.cs" />
+		<EmbeddedResource Include="..\Universal\buildinfo.info" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Costura.Fody" Version="5.7.0">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Jint" Version="3.0.0-beta-2048" />
+		<PackageReference Include="NCrontab.Signed" Version="3.3.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="SystemInfoLibrary-devel" Version="1.5.0.25" />
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+		<PackageReference Include="WebSocket4Net" Version="0.15.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="Exists('c:\')">
+		<Exec Command="cmd /k $(SolutionDir)\Hakuu\Universal\Init.bat" />
+	</Target>
+</Project>

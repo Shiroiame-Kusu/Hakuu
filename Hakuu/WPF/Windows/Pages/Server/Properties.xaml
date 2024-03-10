@@ -1,0 +1,203 @@
+﻿<ui:UiPage
+      x:Class="Hakuu.Windows.Pages.Server.Properties"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hakuu.Windows.Pages.Server"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Properties"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    AllowDrop="True"
+    mc:Ignorable="d">
+
+    <Grid>
+        <DockPanel>
+            <GroupBox Header="MC设置" Name="PropertiesPage" IsEnabledChanged="PropertiesPage_IsEnabledChanged">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="0" Margin="8,8">
+                        <TextBlock Text="服务器模式" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="SERVER_MODE" SelectionChanged="SERVER_MODE_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="生存"/>
+                            <ComboBoxItem Content="创造"/>
+                            <ComboBoxItem Content="旁观"/>
+                            <ComboBoxItem Content="探险"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="1" Margin="8,8">
+                        <TextBlock Text="服务器难度" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="SERVER_DIFFICULTY" SelectionChanged="SERVER_DIFFICULTY_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="和平"/>
+                            <ComboBoxItem Content="简单"/>
+                            <ComboBoxItem Content="普通"/>
+                            <ComboBoxItem Content="困难"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="2" Margin="8,8">
+                        <TextBlock Text="服务器地形" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Text="default" Margin="5" VerticalAlignment="Bottom" IsEnabled="False">
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="3" Margin="8,8">
+                        <TextBlock Text="是否允许飞行" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="ALLOW_FLIGHT" SelectionChanged="ALLOW_FLIGHT_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="允许"/>
+                            <ComboBoxItem Content="禁止"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="0" Grid.Row="4" Margin="8,8">
+                        <TextBlock Text="是否生成动物" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="ANIMAL_SPAWN" SelectionChanged="ANIMAL_SPAWN_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="0" Margin="8,8">
+                        <TextBlock Text="是否生成怪物" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="MOBS_SPAWN" SelectionChanged="MOBS_SPAWN_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="1" Margin="8,8">
+                        <TextBlock Text="是否生成NPC" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="NPC_SPAWN" SelectionChanged="NPC_SPAWN_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="2" Margin="8,8">
+                        <TextBlock Text="是否生成建筑" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="BUILD_GENERATE" SelectionChanged="BUILD_GENERATE_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="3" Margin="8,8">
+                        <TextBlock Text="是否启用地狱" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="NETHER_ISENABLED" SelectionChanged="NETHER_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="4" Margin="8,8">
+                        <TextBlock Text="是否启用PVP" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="PVP_ISENABLED" SelectionChanged="PVP_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2" Grid.Row="0" Margin="8,8">
+                        <TextBlock Text="是否启用极限" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="HARDCORE_ISENABLED" SelectionChanged="HARDCORE_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2" Grid.Row="1" Margin="8,8">
+                        <TextBlock Text="是否启用白名单" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="WHITELIST_ISENABLED" SelectionChanged="WHITELIST_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2" Grid.Row="2" Margin="8,8">
+                        <TextBlock Text="是否启用命令方块" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="COMMANDBLOCK_ISENABLED" SelectionChanged="COMMANDBLOCK_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2" Grid.Row="3" Margin="8,8">
+                        <TextBlock Text="是否启用正版" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Name="ONLINEMODE_ISENABLED" SelectionChanged="ONLINEMODE_ISENABLED_SelectionChanged" Margin="5" VerticalAlignment="Bottom">
+                            <ComboBoxItem Content="启用"/>
+                            <ComboBoxItem Content="禁用"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2" Grid.Row="4" Margin="8,8">
+                        <TextBlock Text="是否启用成就显示" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <ComboBox Margin="5" VerticalAlignment="Bottom" IsEnabled="False">
+
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="0" Margin="8,8">
+                        <TextBlock Text="服务器种子" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_SEED" TextChanged="SERVER_SEED_TextChanged" Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="1" Margin="8,8">
+                        <TextBlock Text="服务器端口" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_PORT" TextChanged="SERVER_PORT_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="2" Margin="8,8">
+                        <TextBlock Text="出生点保护" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SPAWNPOINT_PROTECT" TextChanged="SPAWNPOINT_PROTECT_TextChanged" Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="3" Margin="8,8">
+                        <TextBlock Text="主世界名称" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="MAINWORLD_NAME" TextChanged="MAINWORLD_NAME_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="4" Margin="8,8">
+                        <TextBlock Text="主世界边界" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="WORLD_BORDER" TextChanged="WORLD_BORDER_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="4" Grid.Row="0" Margin="8,8">
+                        <TextBlock Text="游戏玩家上限" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_MAXPLAYER" TextChanged="SERVER_MAXPLAYER_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="4" Grid.Row="1" Margin="8,8">
+                        <TextBlock Text="天空高度上限" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_MAXHEIGHT" Text="256" Margin="5" VerticalAlignment="Bottom" IsEnabled="False">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="4" Grid.Row="2" Margin="8,8">
+                        <TextBlock Text="服务器MOTD" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_MOTD" TextChanged="SERVER_MOTD_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="4" Grid.Row="3" Margin="8,8">
+                        <TextBlock Text="视距大小" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_VIEWDISTANCE" TextChanged="SERVER_VIEWDISTANCE_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                    <Grid Grid.Column="4" Grid.Row="4" Margin="8,8">
+                        <TextBlock Text="模拟区块大小" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0"/>
+                        <TextBox Name="SERVER_SIMULATEDISTANCE" TextChanged="SERVER_SIMULATEDISTANCE_TextChanged"  Margin="5" VerticalAlignment="Bottom">
+
+                        </TextBox>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</ui:UiPage>

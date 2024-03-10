@@ -7,7 +7,7 @@
 	"settings": {
 		"workbench.colorTheme": "Visual Studio 2019 Dark",
 		"workbench.iconTheme": "vscode-icons",
-		"dotnet.defaultSolution": "Serein.sln",
+		"dotnet.defaultSolution": "Hakuu.sln",
 		"dotnet.server.useOmnisharp": true,
 		"editor.bracketPairColorization.enabled": false
 	}

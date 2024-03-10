@@ -29,8 +29,8 @@ jobs:
       - name: Build
         shell: cmd
         run: |
-          dotnet restore ${{ github.workspace }}\Serein.sln
-          dotnet build ${{ github.workspace }}\Serein.sln
+          dotnet restore ${{ github.workspace }}\Hakuu.sln
+          dotnet build ${{ github.workspace }}\Hakuu.sln
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

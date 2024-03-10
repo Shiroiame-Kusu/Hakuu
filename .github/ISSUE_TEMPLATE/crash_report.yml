@@ -1,5 +1,5 @@
 name: "崩溃反馈"
-description: Serein发生了莫名其妙的崩溃
+description: Hakuu发生了莫名其妙的崩溃
 title: "崩溃反馈 <在此处简单描述报错信息>"
 labels: ["❗ 崩溃"]
 
@@ -7,11 +7,11 @@ body:
   - type: input
     id: version
     attributes:
-      label: 当前使用的Serein版本
+      label: 当前使用的Hakuu版本
       description: |
         命令行：输入`version`
         winform：点击设置，拉到最底后的版本查看
-        wpf：设置-Serein设置
+        wpf：设置-Hakuu设置
     validations:
       required: true
 
