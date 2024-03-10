@@ -1,4 +1,4 @@
-# Hakuu For JE - 新时代极简服务器面板
+# Hakuu - 新时代极简服务器面板
 
 <p align="center">
     <img alt="Hakuu" src="https://socialify.git.ci/Shiroiame-Kusu/Hakuu/image?description=1&descriptionEditable=%E6%9E%81%E7%AE%80%E4%BD%86%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%A2%E6%9D%BF%E8%BD%AF%E4%BB%B6&font=KoHo&logo=https%3A%2F%2Fserein.cc%2Fimg%2Fserein.png&name=1&owner=1&pattern=Circuit%20Board#light">
