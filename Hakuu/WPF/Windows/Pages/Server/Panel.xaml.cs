@@ -21,16 +21,18 @@ namespace Hakuu.Windows.Pages.Server
         public static string ServerLog {get; set;}
         private string CommandHeaderSelected = "";
         private static bool IsBackgroundTaskRunning = false;
+        private string? OldServerType = null;
         public Panel()
         {
             InitializeComponent();
             if (!IsBackgroundTaskRunning)
             {
+                IsBackgroundTaskRunning = true;
                 Task.Run(() => {
                     
                     while (true)
                     {
-                        IsBackgroundTaskRunning = true;
+                        
                         string? ServerType = null;
                         if (!ServerManager.Status)
                         {
@@ -42,16 +44,21 @@ namespace Hakuu.Windows.Pages.Server
                             {
 
                             }
-                            switch (ServerType)
+                            if(ServerType != OldServerType)
                             {
-                                case "jar":
-                                    Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+                                switch (ServerType)
+                                {
+                                    case "jar":
+                                        Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
 
-                                    break;
-                                default:
-                                    Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
-                                    break;
+                                        break;
+                                    default:
+                                        Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                                        break;
+                                }
+                                OldServerType = ServerType;
                             }
+                            
                         }
                         
                         System.Threading.Thread.Sleep(500);
@@ -176,7 +183,16 @@ namespace Hakuu.Windows.Pages.Server
                 Difficulity.Content = ServerManager.Status && !string.IsNullOrEmpty(ServerManager.Difficulty) ? ServerManager.Difficulty : "-";
                 Time.Content = ServerManager.Status ? ServerManager.Time : "-";
                 CPUPerc.Content = ServerManager.Status ? "%" + ServerManager.CPUUsage.ToString("N1") : "-";
-                Catalog.MainWindow?.UpdateTitle(ServerManager.Status ? ServerManager.StartFileName : null);
+                //if (string.IsNullOrEmpty(Global.Settings.Server.CustomizedTitle))
+                switch (string.IsNullOrEmpty(Global.Settings.Server.CustomizedTitle)){
+                    case true:
+                        Catalog.MainWindow?.UpdateTitle(ServerManager.Status ? ServerManager.StartFileName : null);
+                        break;
+                    case false:
+                        Catalog.MainWindow?.UpdateTitle(Global.Settings.Server.CustomizedTitle);
+                        break;
+                }
+                
                 JavaVersion.Content = ServerManager.JavaVersion;
                 
             });

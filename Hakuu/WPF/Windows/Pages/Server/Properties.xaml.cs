@@ -20,6 +20,7 @@ using System.IO;
 using Wpf.Ui.Controls;
 using System.Security.Cryptography;
 using Hakuu.Core.Server;
+using System.Collections.Specialized;
 
 namespace Hakuu.Windows.Pages.Server
 {
@@ -29,11 +30,13 @@ namespace Hakuu.Windows.Pages.Server
     public partial class Properties : UiPage
     {
 
-        public PropertyOperation PropertiesOperation;
+        public PropertyOperation PropertiesOperation ;
         public static int i = 0;
 
         private static bool IsBackgroundTaskRunning = false;
         private static bool PageIsEnabled;
+        private static string OldMD5 = "";
+        
         public Properties()
         {
             InitializeComponent();
@@ -53,9 +56,9 @@ namespace Hakuu.Windows.Pages.Server
                     ReloadinBackground();
                 }
             }
-            catch
+            catch(Exception ex) 
             {
-                
+                CrashInterception.ShowException(ex);
             }
         }
         private void ReloadinBackground()
@@ -64,29 +67,39 @@ namespace Hakuu.Windows.Pages.Server
             if(i <= 1)
             {
                 Task.Run(() => {
-                    while (true)
+                while (true)
+                {
+                    if (!ServerManager.Status)
                     {
-                        if (!ServerManager.Status)
-                        {
-                            if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
+                        string MD5 = null;
+                            if(File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                             {
-                                PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
-                                Dispatcher.InvokeAsync(() =>
-                                {
-
-                                    PropertiesPage.IsEnabled = true;
-                                    LoadProperties();
-                                }, System.Windows.Threading.DispatcherPriority.Background);
-
+                                MD5 = GetMD5WithFilePath(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
                             }
-                            else
-                            {
-                                if (PageIsEnabled)
+                            if (!string.IsNullOrEmpty(MD5) && MD5 != OldMD5)
+                            {   
+                                OldMD5 = MD5;
+                                if (File.Exists(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties"))
                                 {
+                                    PropertiesOperation = new PropertyOperation(Path.GetDirectoryName(Global.Settings.Server.Path) + "\\server.properties");
                                     Dispatcher.InvokeAsync(() =>
                                     {
-                                        PropertiesPage.IsEnabled = false;
+
+                                        PropertiesPage.IsEnabled = true;
+                                        LoadProperties();
                                     }, System.Windows.Threading.DispatcherPriority.Background);
+
+                                }
+                                else
+                                {
+                                    if (PageIsEnabled)
+                                    {
+                                        Dispatcher.InvokeAsync(() =>
+                                        {
+                                            PropertiesPage.IsEnabled = false;
+                                        }, System.Windows.Threading.DispatcherPriority.Background);
+                                    }
+
                                 }
 
                             }
@@ -114,6 +127,7 @@ namespace Hakuu.Windows.Pages.Server
             byte[] hash_byte = md5.ComputeHash(file);
             string str = System.BitConverter.ToString(hash_byte);
             str = str.Replace("-", "");
+            file.Close();
             return str;
         }
         private void LoadProperties()
@@ -290,18 +304,45 @@ namespace Hakuu.Windows.Pages.Server
             SERVER_MOTD.Text = PropertiesOperation["motd"]?.ToString();
             SERVER_VIEWDISTANCE.Text = PropertiesOperation["view-distance"]?.ToString();
             SERVER_SIMULATEDISTANCE.Text = PropertiesOperation["simulation-distance"]?.ToString();
-
+            SERVER_MODE.SelectionChanged += SERVER_MODE_SelectionChanged;
+            SERVER_DIFFICULTY.SelectionChanged += SERVER_DIFFICULTY_SelectionChanged;
+            ALLOW_FLIGHT.SelectionChanged += ALLOW_FLIGHT_SelectionChanged;
+            ANIMAL_SPAWN.SelectionChanged += ANIMAL_SPAWN_SelectionChanged;
+            MOBS_SPAWN.SelectionChanged += MOBS_SPAWN_SelectionChanged;
+            NPC_SPAWN.SelectionChanged += NPC_SPAWN_SelectionChanged;
+            BUILD_GENERATE.SelectionChanged += BUILD_GENERATE_SelectionChanged;
+            NETHER_ISENABLED.SelectionChanged += NETHER_ISENABLED_SelectionChanged;
+            PVP_ISENABLED.SelectionChanged += PVP_ISENABLED_SelectionChanged;
+            HARDCORE_ISENABLED.SelectionChanged += HARDCORE_ISENABLED_SelectionChanged;
+            WHITELIST_ISENABLED.SelectionChanged += WHITELIST_ISENABLED_SelectionChanged;
+            COMMANDBLOCK_ISENABLED.SelectionChanged += COMMANDBLOCK_ISENABLED_SelectionChanged;
+            ONLINEMODE_ISENABLED.SelectionChanged += ONLINEMODE_ISENABLED_SelectionChanged;
+            SERVER_SEED.TextChanged += SERVER_SEED_TextChanged;
+            SERVER_PORT.TextChanged += SERVER_PORT_TextChanged;
+            SPAWNPOINT_PROTECT.TextChanged += SPAWNPOINT_PROTECT_TextChanged;
+            MAINWORLD_NAME.TextChanged += MAINWORLD_NAME_TextChanged;
+            WORLD_BORDER.TextChanged += WORLD_BORDER_TextChanged;
+            SERVER_MAXPLAYER.TextChanged += SERVER_MAXPLAYER_TextChanged;
+            SERVER_MOTD.TextChanged += SERVER_MOTD_TextChanged;
+            SERVER_VIEWDISTANCE.TextChanged += SERVER_VIEWDISTANCE_TextChanged;
+            SERVER_SIMULATEDISTANCE.TextChanged += SERVER_SIMULATEDISTANCE_TextChanged;
 
 
 
             GC.Collect();
 
         }
-        private void SaveProperties()
+        private async void SaveProperties()
         {
-            PropertiesOperation.Save();
-        }
+            
+            if (!PropertiesOperation.Save())
+            {
+                Dispatcher.Invoke(() => {
+                    Logger.MsgBox($"无法自动保存配置文件, 文件被{PropertyOperation.FileOccupiedProcessName} PID:{PropertyOperation.FileOccupiedProcessPID}占用","Hakuu",0,48);
+                },System.Windows.Threading.DispatcherPriority.Background);
 
+            }
+        }
         private void SERVER_MODE_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (SERVER_MODE.SelectedIndex) {
@@ -319,7 +360,7 @@ namespace Hakuu.Windows.Pages.Server
                     break;
 
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_DIFFICULTY_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -339,7 +380,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["difficulty"] = "hard";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void ALLOW_FLIGHT_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -353,7 +394,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["allow-flight"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void ANIMAL_SPAWN_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -367,7 +408,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["spawn-animals"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void MOBS_SPAWN_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -381,7 +422,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["spawn-monsters"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void NPC_SPAWN_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -395,7 +436,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["spawn-npcs"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void BUILD_GENERATE_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -409,7 +450,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["generate-structures"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void NETHER_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -422,7 +463,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["allow-nether"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void PVP_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -436,7 +477,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["pvp"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void HARDCORE_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -450,7 +491,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["hardcore"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void WHITELIST_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -464,7 +505,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["white-list"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void COMMANDBLOCK_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -478,7 +519,7 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["enable-command-block"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void ONLINEMODE_ISENABLED_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -492,61 +533,61 @@ namespace Hakuu.Windows.Pages.Server
                     PropertiesOperation["online-mode"] = "false";
                     break;
             }
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_SEED_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["level-seed"] = SERVER_SEED.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_PORT_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["server-port"] = SERVER_PORT.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SPAWNPOINT_PROTECT_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["spawn-protection"] = SPAWNPOINT_PROTECT.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void MAINWORLD_NAME_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["level-name"] = MAINWORLD_NAME.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void WORLD_BORDER_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["max-world-size"] = WORLD_BORDER.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_MAXPLAYER_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["max-players"] = SERVER_MAXPLAYER.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_MOTD_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["motd"] = SERVER_MOTD.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_VIEWDISTANCE_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["view-distance"] = SERVER_VIEWDISTANCE.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void SERVER_SIMULATEDISTANCE_TextChanged(object sender, TextChangedEventArgs e)
         {
             PropertiesOperation["simulation-distance"] = SERVER_SIMULATEDISTANCE.Text;
-            PropertiesOperation.Save();
+            SaveProperties();
         }
 
         private void PropertiesPage_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)

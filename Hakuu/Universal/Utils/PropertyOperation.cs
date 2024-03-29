@@ -1,12 +1,17 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Hakuu.Utils
 {
     public class PropertyOperation : System.Collections.Hashtable
     {
         private string? fileName;
+        public static int? FileOccupiedProcessPID;
+        public static string? FileOccupiedProcessName;
         private ArrayList list = new ArrayList();
         public ArrayList List
         {
@@ -21,6 +26,7 @@ namespace Hakuu.Utils
         {
             PropertyOperator(fileName);
         }
+        
         public void PropertyOperator(string fileName)
         {
             this.fileName = fileName;
@@ -130,15 +136,55 @@ namespace Hakuu.Utils
                 }
             }
         }
+        public bool FileCheck(string filePath)
+        {
+            Process[] processes = Process.GetProcesses();
+            foreach (Process process in processes)
+            {
+                try
+                {
+                    // 获取进程打开的文件句柄
+                    foreach (ProcessModule module in process.Modules)
+                    {
+                        if (module.FileName.Equals(filePath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"Process Name: {process.ProcessName}, PID: {process.Id}");
+                            return false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 忽略访问拒绝或其他异常
+                    Console.WriteLine($"Error accessing process {process.ProcessName}: {ex.Message}");
+                }
+            }
+            return true;
+            
+        }
         /// <summary>
         /// �����ļ�
         /// </summary>
         /// <param name="filePath">Ҫ������ļ���·��</param>
-        public void Save()
+        public bool Save()
         {
             string? filePath = this.fileName;
             if (File.Exists(filePath))
             {
+                int PID;
+                string ProcessName;
+                /*if (FileOccupationCheck.Check(filePath,out FileOccupiedProcessName,out FileOccupiedProcessPID))
+                {
+                    File.Delete(filePath);
+                    
+                }
+                else
+                {   
+                    //FileOccupiedProcessPID = PID;
+                    //FileOccupiedProcessName = ProcessName;
+                    
+                    return false;
+                }*/
                 File.Delete(filePath);
             }
             FileStream fileStream = File.Create(filePath);
@@ -165,6 +211,7 @@ namespace Hakuu.Utils
             }
             sw.Close();
             fileStream.Close();
+            return true;
         }
     }
 }

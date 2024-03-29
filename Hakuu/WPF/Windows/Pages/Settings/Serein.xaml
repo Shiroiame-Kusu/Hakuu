@@ -44,6 +44,27 @@
                     Click="ThemeFollowSystem_Click"
                     Content="主题跟随系统"
                     ToolTip="Win10及以上的版本中，主题颜色自动跟随&quot;设置&gt;颜色&quot;调整" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:ToggleSwitch
+                        Grid.Column="0"
+                        x:Name="CustomizeTitle"
+                        Margin="0,7"
+                        Click="CustomizeTitle_Click"
+                        Content="启用自定义标题"
+                        ToolTip="" />
+                    <ui:TextBox
+                        x:Name="CustomizedTitle"
+                        Grid.Column="1"
+                        Margin="10,0,50,0"
+                        TextChanged="CustomizedTitle_TextChanged"
+                        Visibility="Collapsed"
+                        />
+                </Grid>
+
             </StackPanel>
             <StackPanel Grid.Column="1">
                 <TextBlock
