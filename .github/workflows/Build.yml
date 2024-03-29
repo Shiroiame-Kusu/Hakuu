@@ -79,5 +79,16 @@ jobs:
           name: Hakuu_${{ matrix.project }}_dotnet6_publish
           path: ${{ github.workspace }}\Hakuu\${{ matrix.project }}\bin\Debug\net6.0-windows\win-x64\publish
           if-no-files-found: ignore
-
-  
+      
+      - name: Build the project(Publish,Release,SingleFile)
+        run: |
+          dotnet clean
+          dotnet publish Hakuu/${{ matrix.project }}/Hakuu-${{ matrix.project }}.csproj -f net6.0-windows -r win-x64 -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Configuration=Release --sc -p:IncludeAllContentForSelfExtract=true -p:EnableCompressionInSingleFile=true
+      
+      - name: Upload Hakuu(Publish,Release)
+        uses: actions/upload-artifact@v3
+        with:
+          name: Hakuu_${{ matrix.project }}_dotnet6_WithEnvironment_SingleFile
+          path: ${{ github.workspace }}\Hakuu\${{ matrix.project }}\bin\Release\net6.0-windows\win-x64\publish
+          if-no-files-found: ignore
+        
