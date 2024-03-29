@@ -40,5 +40,7 @@ namespace Hakuu.Settings
         public string? JavaPath;
 
         public bool AutoJVMOptimization = true;
+        public bool isCustomizedTitleEnabled = false;
+        public string CustomizedTitle = "";
     }
 }

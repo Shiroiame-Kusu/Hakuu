@@ -40,6 +40,19 @@ namespace Hakuu.Windows.Pages.Settings
             {
                 HakuuDownloadPath.Text = Global.Settings.Hakuu.HakuuDownloadPath;
             }
+            CustomizeTitle.IsChecked = Global.Settings.Server.isCustomizedTitleEnabled;
+            switch (CustomizeTitle.IsChecked)
+            {
+                case true:
+                    CustomizedTitle.Visibility = Visibility.Visible;
+                    break;
+                case false:
+                    CustomizedTitle.Visibility = Visibility.Collapsed;
+                    break;
+            }
+            
+            //CustomizedTitle.IsEnabled = Global.Settings.Server.isCustomizedTitleEnabled;
+            
         }
 
         private void EnableGetUpdate_Click(object sender, RoutedEventArgs e)
@@ -90,6 +103,25 @@ namespace Hakuu.Windows.Pages.Settings
                 Global.Settings.Hakuu.HakuuDownloadPath = dialog.SelectedPath;
             }
             
+        }
+        private void CustomizeTitle_Click(object sender, RoutedEventArgs e)
+        {
+            Global.Settings.Server.isCustomizedTitleEnabled = (bool)CustomizeTitle.IsChecked;
+            switch (CustomizeTitle.IsChecked)
+            {
+                case true:
+                    CustomizedTitle.Visibility = Visibility.Visible;
+                    break;
+                case false:
+                    CustomizedTitle.Visibility = Visibility.Collapsed;
+                    break;
+            }
+        }
+
+        private void CustomizedTitle_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Global.Settings.Server.CustomizedTitle = CustomizedTitle.Text;
+            Catalog.MainWindow?.UpdateTitle(Global.Settings.Server.CustomizedTitle);
         }
     }
 }

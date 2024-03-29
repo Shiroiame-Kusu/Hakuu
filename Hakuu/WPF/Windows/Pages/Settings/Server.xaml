@@ -15,6 +15,7 @@
         <StackPanel.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="Margin" Value="0,15,0,5" />
+                
             </Style>
         </StackPanel.Resources>
         <TextBlock
@@ -61,16 +62,26 @@
         Icon="OpenFolder24" />
         </Grid>
         <TextBlock
-            HorizontalAlignment="Left"
-            Text="关服指令（一行一条）"
-            ToolTip="使用关服功能时执行的命令" />
-        <TextBox
-            Name="StopCommands"
-            Margin="0,0,0,10"
-            AcceptsReturn="True"
-            Text="stop"
-            TextChanged="StopCommands_TextChanged"
-            ToolTip="使用关服功能时执行的命令" />
+    HorizontalAlignment="Left"
+    Text="关服指令（一行一条）"
+    ToolTip="使用关服功能时执行的命令" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBox
+                Grid.Column="0"
+                Name="StopCommands"
+                Margin="0,0,0,10"
+                AcceptsReturn="True"
+                Text="stop"
+                TextChanged="StopCommands_TextChanged"
+                ToolTip="使用关服功能时执行的命令" />
+            
+        </Grid>
+        
         <ui:ToggleSwitch
             x:Name="AutoStop"
             Margin="0,7"
