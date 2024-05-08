@@ -30,7 +30,8 @@
             <TextBox
                 Name="Path"
                 IsReadOnly="True"
-                ToolTip="服务端的启动路径" />
+                ToolTip="服务端的启动路径" 
+                TextChanged="Path_TextChanged"/>
             <ui:Button
                 x:Name="Select"
                 Grid.Column="1"
@@ -52,7 +53,8 @@
             <TextBox
         Name="JavaSEPath"
         IsReadOnly="True"
-        ToolTip="Java环境路径" />
+        ToolTip="Java环境路径" 
+                />
             <ui:Button
         x:Name="SelectJava"
         Grid.Column="1"

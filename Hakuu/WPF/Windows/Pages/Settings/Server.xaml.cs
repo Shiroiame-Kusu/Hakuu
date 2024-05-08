@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using Hakuu.Core.Server;
+using Hakuu.Utils;
+using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -89,6 +92,7 @@ namespace Hakuu.Windows.Pages.Settings
             {
                 Path.Text = dialog.FileName;
                 Global.Settings.Server.Path = dialog.FileName;
+                PathChangeHandler();
                 if (Catalog.Server.Plugins != null) { Catalog.Server.Plugins.Load(); }
             }
         }
@@ -106,6 +110,29 @@ namespace Hakuu.Windows.Pages.Settings
                 Global.Settings.Server.JavaPath = dialog.FileName;
                 if (Catalog.Server.Plugins != null) { Catalog.Server.Plugins.Load(); }
             }
+        }
+        private void Path_TextChanged(object sender, TextChangedEventArgs e) { }
+
+        private void PathChangeHandler()
+        {
+            if (!string.IsNullOrEmpty(Global.Settings.Server.Path)) {
+                try
+                {
+                    Catalog.Server.Container.ContainerUpdater(Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3));
+                    Catalog.Server.Panel.PageUpdater(Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3));
+                    
+
+                }
+                catch(Exception ex) 
+                {
+                    Catalog.WaitForUpdate.Server_Panel = true;
+                    Catalog.WaitForUpdate.Server_Container = true;
+                    CrashInterception.ShowException(ex);
+                }
+            }
+            
+
+
         }
     }
 }

@@ -29,32 +29,30 @@ namespace Hakuu.Windows.Pages.Server
                 Navigation.Frame = null;
             }
             Catalog.Server.Container = this;
-            Task.Run(() => {
-                while (true)
-                {
-                    string? ServerType = null;
-                    try
-                    {
-                        ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                    }
-                    catch
-                    {
+            if (Catalog.WaitForUpdate.Server_Container) {
+                ContainerUpdater(Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3));
+            }
+        }
+        public void ContainerUpdater(string ServerType)
+        {
+            if (!string.IsNullOrEmpty(ServerType))
+            {
 
-                    }
-                    switch (ServerType)
-                    {
-                        case "jar":
-                            Dispatcher.InvokeAsync(() => { MinecraftProperties.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
-                            Dispatcher.InvokeAsync(() => { PlayerList.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
-                            break;
-                        default:
-                            Dispatcher.InvokeAsync(() => { MinecraftProperties.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
-                            Dispatcher.InvokeAsync(() => { PlayerList.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
-                            break;
-                    }
-                    System.Threading.Thread.Sleep(500);
+                switch (ServerType)
+                {
+                    case "jar":
+                        Dispatcher.Invoke(() => { this.MinecraftProperties.Visibility = Visibility.Visible; });
+                        Dispatcher.Invoke(() => { this.PlayerList.Visibility = Visibility.Visible; });
+                        break;
+                    default:
+                        Dispatcher.Invoke(() => { this.MinecraftProperties.Visibility = Visibility.Collapsed; });
+                        Dispatcher.Invoke(() => { this.PlayerList.Visibility = Visibility.Collapsed; });
+                        break;
                 }
-            });
+
+
+            }
+            Catalog.WaitForUpdate.Server_Container = false;
         }
     }
 }

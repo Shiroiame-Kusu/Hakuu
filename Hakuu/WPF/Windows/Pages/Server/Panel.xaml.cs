@@ -25,49 +25,6 @@ namespace Hakuu.Windows.Pages.Server
         public Panel()
         {
             InitializeComponent();
-            if (!IsBackgroundTaskRunning)
-            {
-                IsBackgroundTaskRunning = true;
-                Task.Run(() => {
-                    
-                    while (true)
-                    {
-                        
-                        string? ServerType = null;
-                        if (!ServerManager.Status)
-                        {
-                            try
-                            {
-                                ServerType = Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3);
-                            }
-                            catch
-                            {
-
-                            }
-                            if(ServerType != OldServerType)
-                            {
-                                switch (ServerType)
-                                {
-                                    case "jar":
-                                        Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
-
-                                        break;
-                                    default:
-                                        Dispatcher.InvokeAsync(() => { MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
-                                        break;
-                                }
-                                OldServerType = ServerType;
-                            }
-                            
-                        }
-                        
-                        System.Threading.Thread.Sleep(500);
-                    }
-                });
-            }
-            
-
-            
             
             AutoJVMOptimization.IsChecked = Global.Settings.Server.AutoJVMOptimization;
             _updateInfoTimer.Elapsed += (_, _) => UpdateInfos();
@@ -81,6 +38,10 @@ namespace Hakuu.Windows.Pages.Server
                 );
             }
             Catalog.Server.Panel = this;
+            if (Catalog.WaitForUpdate.Server_Panel)
+            {
+                PageUpdater(Global.Settings.Server.Path.Substring(Global.Settings.Server.Path.Length - 3));
+            }
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
@@ -266,6 +227,21 @@ namespace Hakuu.Windows.Pages.Server
         private void MaxRAM_TextChanged(object sender, TextChangedEventArgs e)
         {
             Global.Settings.Server.MaxRAM = MaxRAM.Text;
+        }
+        public void PageUpdater(string ServerType)
+        {   
+            
+            switch (ServerType)
+            {
+                case "jar":
+                    this.Dispatcher.InvokeAsync(() => { this.MEMSettings.Visibility = Visibility.Visible; }, System.Windows.Threading.DispatcherPriority.Background);
+
+                    break;
+                default:
+                    this.Dispatcher.InvokeAsync(() => { this.MEMSettings.Visibility = Visibility.Collapsed; }, System.Windows.Threading.DispatcherPriority.Background);
+                    break;
+            }
+            Catalog.WaitForUpdate.Server_Panel = false;
         }
     }
 }

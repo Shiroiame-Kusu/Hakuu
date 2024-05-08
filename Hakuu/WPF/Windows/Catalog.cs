@@ -36,5 +36,10 @@ namespace Hakuu.Windows
             public static Pages.Settings.Hakuu? Hakuu { get; set; }
             public static Pages.Settings.Container? Container { get; set; }
         }
+        public static class WaitForUpdate
+        {
+            public static bool Server_Panel = false;
+            public static bool Server_Container = false;
+        }
     }
 }

@@ -50,12 +50,13 @@ namespace Hakuu.Utils
             if (!Global.Settings.Hakuu.EnableGetUpdate)
             {
                 return;
-            }else if(Global.BRANCH.Equals("Preview")){
+            }else if(!Global.BRANCH.Equals("Release")){
                 return;
             }
             try
             {
-                JObject? jsonObject = (JsonConvert.DeserializeObject<JObject>(Net.Get("https://api.github.com/repos/Shiroiame-Kusu/Hakuu/releases/latest", "application/vnd.github.v3+json", "Hakuu").Await().Content.ReadAsStringAsync().Await()));
+                JObject? jsonObject = JsonConvert.DeserializeObject<JObject>(Net.Get("https://api.github.com/repos/Shiroiame-Kusu/Hakuu/releases/latest", "application/vnd.github.v3+json", "Hakuu").Await().Content.ReadAsStringAsync().Await());
+                
                 if (jsonObject is null)
                 {
                     return;
